@@ -3,4 +3,7 @@
 
 !.zshrc
 !.zprofile
+!.tmux.conf
+
+!.config/starship.toml
 

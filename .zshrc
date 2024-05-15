@@ -44,8 +44,9 @@ complete -o default -F __start_kubectl k
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
 
-# Created by `pipx` on 2024-01-11 14:43:26
-export PATH="$PATH:/Users/km3/.local/bin"
+# pipx
+export PATH="$PATH:/Users/km3/.local/pipx"
+export PIPX_HOME="$HOME/.local/pipx"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
@@ -70,9 +71,14 @@ fi
 
 # Aliases
 alias ls='ls -G --color=auto'
+alias q='exit'
+alias today='date "+%Y-%m-%d"'
 
 # starship
 eval "$(starship init zsh)"
+
+# pipx
+# eval "$(register-python-argcomplete pipx)"
 
 # zsh-autosuggestions
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh

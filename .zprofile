@@ -9,3 +9,7 @@ export PATH="$PATH:/Users/km3/Library/Application Support/JetBrains/Toolbox/scri
 # pipx
 export PATH="$PATH:/Users/km3/.local/pipx"
 
+export PATH=$HOME/flutter/bin:$PATH
+
+export PATH="$HOME/.plenv/bin:$PATH"
+eval "$(plenv init zsh -)"

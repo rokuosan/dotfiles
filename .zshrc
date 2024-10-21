@@ -73,6 +73,7 @@ fi
 alias ls='ls -G --color=auto'
 alias q='exit'
 alias today='date "+%Y-%m-%d"'
+alias e='emacs'
 
 # starship
 eval "$(starship init zsh)"
@@ -83,3 +84,15 @@ eval "$(starship init zsh)"
 # zsh-autosuggestions
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 eval "$(rbenv init - zsh)"
+
+export PATH=$PATH:$HOME/local/bin
+source <(home completion zsh)
+export NATURE_TOKEN=L6cSAicqlcLAR-pSDx4aJ2iPFneeKz_JRQRTOK99ThE.S4TE0fJJMmmquiKyVn6YEZYM0MtLnDYhpyIUAZBlDnA
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/vault vault
+export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
+
+
+# Created by `pipx` on 2024-09-26 15:51:01
+export PATH="$PATH:/Users/km3/.local/bin"

@@ -93,6 +93,8 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /opt/homebrew/bin/vault vault
 export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
 
+# Taskfile
+eval "$(task --completion zsh)"
 
 # Created by `pipx` on 2024-09-26 15:51:01
 export PATH="$PATH:/Users/km3/.local/bin"

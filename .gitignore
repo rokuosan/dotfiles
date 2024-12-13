@@ -1,9 +1,2 @@
-/**
-/.**
-
-!.zshrc
-!.zprofile
-!.tmux.conf
-
-!.config/starship.toml
-
+backup/**
+!backup/.gitkeep

@@ -62,7 +62,14 @@ function main() {
     info "Installing dotfiles..."
     debug "DOTFILES_HOME: ${DOTFILES_HOME}"
     debug "BACKUP_DIR: ${BACKUP_DIR}"
-    error "This script is not yet implemented."
+
+    link "config/zsh/.zshrc" ".zshrc"
+    link "config/zsh/.zprofile" ".zprofile"
+
+    link_dir "config/zsh" ".config/zsh"
+    link_dir "config/ghostty" ".config/ghostty"
+
+    link "config/starship/starship.toml" ".config/starship.toml"
 }
 
 main "$@"

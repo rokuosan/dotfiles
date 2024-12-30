@@ -26,7 +26,8 @@ function backup() {
 function link() {
     local src="${DOTFILES_HOME}/${1}" dest="${HOME}/${2}"
     [ -f "${dest}" ] && backup "${2}"
-    ln -fsv "${src}" "${dest}"
+    info "${dest} -> ${src}"
+    ln -fs "${src}" "${dest}"
 }
 
 # link_dir creates a symbolic link to a directory.
@@ -35,7 +36,8 @@ function link_dir() {
     local src="${DOTFILES_HOME}/${1}" dest="${HOME}/${2}"
     [ -e "${dest}" ] && backup "${2}"
     if [ -L "${dest}" ]; then rm "${dest}"; fi
-    ln -sv "${src}" "${dest}"
+    info "${dest} -> ${src}"
+    ln -s "${src}" "${dest}"
 }
 
 # show_help prints the help message.

@@ -1,14 +1,20 @@
+# Theme Settings
+theme = catppuccin-macchiato
+
+
+# Font Settings
 font-family = 'HackGen Console NF'
-font-size = 16
+font-feature = "-calt"
 font-feature = "-dlig"
 font-feature = "-liga"
-font-feature = "-calt"
+font-size = 16
 
-theme = catppuccin-macchiato
-window-padding-x = 10
-window-padding-y = 5
-window-padding-balance = true
-window-theme = ghostty
-background-opacity = 0.65
-background-blur-radius = 20
+
+# Window Settings
 macos-titlebar-style = transparent
+window-padding-balance = true
+window-padding-x = 0
+window-padding-y = 0
+window-theme = ghostty
+background-blur-radius = 20
+background-opacity = 0.65

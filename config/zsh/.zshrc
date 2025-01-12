@@ -25,4 +25,4 @@ alias k='kubectl'
 
 # Path(temporary)
 export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
-
+source "$HOME/.sdkman/bin/sdkman-init.sh"

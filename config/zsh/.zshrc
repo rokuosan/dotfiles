@@ -9,6 +9,7 @@ module_names=(
     "history"
     "starship"
     "syntax-highlight"
+    "peco"
 )
 for module_name in $module_names; do
     source $HOME/.config/zsh/module.d/$module_name.zsh

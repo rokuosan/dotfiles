@@ -15,6 +15,10 @@ for module_name in $module_names; do
 done
 unset module_name{s,}
 
+if [[ -f "$HOME/.zshrc.local" ]]; then
+    source "$HOME/.zshrc.local"
+fi
+
 # Aliases
 alias today='date "+%Y-%m-%d"'
 alias ls='ls -G --color=auto'
@@ -22,7 +26,3 @@ alias ll='ls -G --color=auto -l'
 alias q='exit'
 alias v='nvim'
 alias k='kubectl'
-
-# Path(temporary)
-export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
-source "$HOME/.sdkman/bin/sdkman-init.sh"

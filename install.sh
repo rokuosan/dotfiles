@@ -72,6 +72,8 @@ function main() {
     link_dir "config/ghostty" ".config/ghostty"
 
     link "config/starship/starship.toml" ".config/starship.toml"
+
+    link "config/peco/config.json" ".config/peco/config.json"
 }
 
 main "$@"

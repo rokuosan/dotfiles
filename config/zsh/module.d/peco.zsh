@@ -1,13 +1,14 @@
 if (( $+commands[peco] )); then
+    # History
     function peco-history-selection() {
         BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
         CURSOR=$#BUFFER
         zle reset-prompt
     }
-
     zle -N peco-history-selection
     bindkey '^R' peco-history-selection
 
+    # SSH
     function peco-ssh () {
         local selected_host=$(awk '
         tolower($1)=="host" {
@@ -27,6 +28,7 @@ if (( $+commands[peco] )); then
     zle -N peco-ssh
     bindkey '^\' peco-ssh
 
+    # ghq
     if (( $+commands[ghq] )); then
         function peco-ghq-look () {
             local ghq_roots="$(git config --path --get-all ghq.root)"

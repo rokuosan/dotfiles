@@ -1,11 +1,11 @@
-# 
+#
 # History settings
 #
 
 # History file
 HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=100000
+HISTSIZE=500000
+SAVEHIST=500000
 
 # History settings
 setopt EXTENDED_HISTORY

@@ -27,3 +27,19 @@ alias ll='ls -G --color=auto -l'
 alias q='exit'
 alias v='nvim'
 alias k='kubectl'
+alias t='task'
+disable r
+alias r='bin/rails'
+alias p='pnpm'
+
+eval "$(zoxide init zsh)"
+
+eval "$(git wt --init zsh)"
+wt() {
+    git wt "$(git wt | tail -n +2 | peco | awk '{print $(NF-1)}')"
+}
+
+export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+# bun completions
+[ -s "/Users/km3/.bun/_bun" ] && source "/Users/km3/.bun/_bun"

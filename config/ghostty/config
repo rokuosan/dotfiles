@@ -1,9 +1,16 @@
 # Theme Settings
-theme = "catppuccin-macchiato"
+# theme = "catppuccin-macchiato"
+# theme = "NvimDark"
+# theme = "Monokai Pro Machine"
+theme = "TokyoNight Moon"
 
 
-# Font Settings
-font-family = 'HackGen Console NF'
+# Font Settings 日本語
+font-family = "CaskaydiaMono Nerd Font Mono"
+font-family = "UDEV Gothic 35NF"
+# font-family = "BIZ UDGothic"
+# font-family = "HackGen Console NF"
+# font-family = "Plemol JP Console NF"
 font-feature = "-calt"
 font-feature = "-dlig"
 font-feature = "-liga"
@@ -17,10 +24,12 @@ window-padding-x = 0
 window-padding-y = 0
 window-theme = ghostty
 background-blur-radius = 20
-background-opacity = 0.9
+background-opacity = 1.0
 window-height = 10000
 window-width = 10000
 
 
 # TERM
 term = "xterm-256color"
+keybind = shift+enter=text:\n
+

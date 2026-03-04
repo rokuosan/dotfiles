@@ -1,6 +1,6 @@
 [user]
 	name = Koki Matsumoto
-	email = rokuosan@km3.dev
+	email = 85651386+rokuosan@users.noreply.github.com
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ2yIbtH80uongeZeWXJAUxCcLoQUu2MV2buAHvQ3do1
 [core]
 	autocrlf = input

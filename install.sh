@@ -85,13 +85,15 @@ function main() {
 
     link "config/zsh/.zshrc" ".zshrc"
     link "config/zsh/.zprofile" ".zprofile"
-
     link_dir "config/zsh" ".config/zsh"
+
+    link_dir "config/1Password" ".config/1Password"
+    link_dir "config/gh" ".config/gh"
     link_dir "config/ghostty" ".config/ghostty"
-
-    link "config/starship/starship.toml" ".config/starship.toml"
-
-    link "config/peco/config.json" ".config/peco/config.json"
+    link_dir "config/git" ".config/git"
+    link_dir "config/mise" ".config/mise"
+    link_dir "config/peco" ".config/peco"
+    link_dir "config/starship" ".config/starship"
 }
 
 main "$@"

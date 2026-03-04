@@ -2,3 +2,6 @@
 
 # 各リポジトリで自分自身の作業スペースを確保したい
 rokuosan-workspace/**
+
+# git-wt
+.worktree/**

@@ -1,0 +1,4 @@
+.DS_Store
+
+# 各リポジトリで自分自身の作業スペースを確保したい
+rokuosan-workspace/**

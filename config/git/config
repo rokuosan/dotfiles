@@ -1,0 +1,26 @@
+[user]
+	name = Koki Matsumoto
+	email = rokuosan@km3.dev
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ2yIbtH80uongeZeWXJAUxCcLoQUu2MV2buAHvQ3do1
+[core]
+	autocrlf = input
+[pull]
+	rebase = false
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true
+[gpg]
+ 	format = ssh
+[gpg "ssh"]
+ 	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[ghq]
+	root = ~/repo
+[push]
+	autoSetupRemote = true
+[alias]
+	sw = switch
+[wt]
+	basedir = .worktrees

@@ -92,6 +92,7 @@ function main() {
     link_dir "config/ghostty" ".config/ghostty"
     link_dir "config/git" ".config/git"
     link_dir "config/mise" ".config/mise"
+    link_dir "config/nvim" ".config/nvim"
     link_dir "config/peco" ".config/peco"
     link_dir "config/starship" ".config/starship"
 }

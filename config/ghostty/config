@@ -3,7 +3,8 @@
 # theme = "NvimDark"
 # theme = "Monokai Pro Machine"
 theme = "TokyoNight Moon"
-
+# theme = "Arcoiris"
+# theme = "Dimidium"
 
 # Font Settings 日本語
 font-family = "CaskaydiaMono Nerd Font Mono"
@@ -11,6 +12,8 @@ font-family = "UDEV Gothic 35NF"
 # font-family = "BIZ UDGothic"
 # font-family = "HackGen Console NF"
 # font-family = "Plemol JP Console NF"
+# font-family = 'HackGen Console NF'
+# font-family = 'Google Sans Code'
 font-feature = "-calt"
 font-feature = "-dlig"
 font-feature = "-liga"

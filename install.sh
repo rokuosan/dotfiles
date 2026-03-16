@@ -8,7 +8,7 @@
 # = DESCRIPTION
 #   This script creates symbolic links to the dotfiles in the home directory.
 #
-set -euo pipefail
+set -euxo pipefail
 
 DEBUG=0
 DRY_RUN=0

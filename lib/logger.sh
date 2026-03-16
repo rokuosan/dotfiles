@@ -1,4 +1,5 @@
-source "$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)/colors.sh"
+#!/bin/bash
+source  "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/colors.sh"
 
 # now returns the current date and time.
 function now() {

@@ -31,6 +31,7 @@ alias t='task'
 disable r
 alias r='bin/rails'
 alias p='pnpm'
+alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
 
 eval "$(zoxide init zsh)"
 

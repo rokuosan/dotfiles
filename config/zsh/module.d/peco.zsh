@@ -72,3 +72,18 @@ if (( $+commands[peco] )); then
     zle -N peco-action-menu
     bindkey '^\' peco-action-menu
 fi
+
+# Taskfile runner
+function tt() {
+    if ! command -v task &> /dev/null; then
+        echo "task command not found. Please install go-task/task."
+        return 1
+    fi
+
+    local selected_task=$(task --list-all 2>/dev/null | grep "^\*" | peco --prompt="task >")
+    if [ -n "$selected_task" ]; then
+        local task_name=$(echo "$selected_task" | awk '{print $2}' | sed 's/:$//')
+        echo "Running: task ${task_name}"
+        task ${task_name}
+    fi
+}

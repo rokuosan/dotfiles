@@ -24,12 +24,12 @@ fi
 alias today='date "+%Y-%m-%d"'
 alias ls='ls -G --color=auto'
 alias ll='ls -G --color=auto -l'
+alias path='echo $PATH | tr ":" "\n"'
 alias q='exit'
 alias v='nvim'
 alias k='kubectl'
 alias t='task'
-disable r
-alias r='bin/rails'
+alias g='git'
 alias p='pnpm'
 alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
 

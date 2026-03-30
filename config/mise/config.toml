@@ -2,5 +2,6 @@
 hello = "echo hello from mise"
 
 [tools]
+"aqua:ariga/atlas" = "1.1.0"
 deno = "2.7.9"
 

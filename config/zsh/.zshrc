@@ -11,6 +11,7 @@ module_names=(
     "syntax-highlight"
     "peco"
     "git-wt"
+    "mise"
 )
 for module_name in $module_names; do
     source $HOME/.config/zsh/module.d/$module_name.zsh

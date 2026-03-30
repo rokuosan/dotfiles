@@ -2,6 +2,8 @@ export LANG='ja_JP.UTF-8'
 export LC_ALL='ja_JP.UTF-8'
 
 export XDG_CONFIG_HOME=~/.config
+export XDG_CACHE_HOME=~/.cache
+export XDG_DATA_HOME=~/.local/share
 
 # Editor
 export PAGER='less'

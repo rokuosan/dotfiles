@@ -1,3 +1,6 @@
 [tasks]
 hello = "echo hello from mise"
 
+[tools]
+deno = "2.7.9"
+

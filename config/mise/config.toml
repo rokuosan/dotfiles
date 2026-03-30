@@ -3,5 +3,8 @@ hello = "echo hello from mise"
 
 [tools]
 "aqua:ariga/atlas" = "1.1.0"
+"aqua:helm/helm" = "latest"
+"aqua:kubernetes/kubectl" = "v1.34.5"
 deno = "2.7.9"
-
+java = "26.0.0"
+python = "3.10"

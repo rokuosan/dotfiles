@@ -22,6 +22,7 @@ typeset -gU path fpath cdpath
 path=(
     $HOME/.bin
     $HOME/local/bin
+    $HOME/.local/bin
     /opt/homebrew/{sbin,bin}
     /usr/local/{sbin,bin}
     /usr/{sbin,bin}

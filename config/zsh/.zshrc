@@ -10,6 +10,7 @@ module_names=(
     "starship"
     "syntax-highlight"
     "peco"
+    "git-wt"
 )
 for module_name in $module_names; do
     source $HOME/.config/zsh/module.d/$module_name.zsh
@@ -34,11 +35,6 @@ alias p='pnpm'
 alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
 
 eval "$(zoxide init zsh)"
-
-eval "$(git wt --init zsh)"
-wt() {
-    git wt "$(git wt | tail -n +2 | peco | awk '{print $(NF-1)}')"
-}
 
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 

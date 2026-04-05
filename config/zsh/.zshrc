@@ -5,13 +5,13 @@ ZSH_MODULE_PATH="$ZSH_CONFIG_PATH/module.d"
 
 # Load modules
 module_names=(
+    "mise"
     "completion"
     "history"
     "starship"
     "syntax-highlight"
     "peco"
     "git-wt"
-    "mise"
 )
 for module_name in $module_names; do
     source $HOME/.config/zsh/module.d/$module_name.zsh

@@ -1,9 +1,11 @@
+#!/usr/bin/env zsh
+
 #
 # History settings
 #
 
 # History file
-HISTFILE=~/.zsh_history
+HISTFILE="$HOME/.zsh_history"
 HISTSIZE=500000
 SAVEHIST=500000
 

@@ -36,3 +36,9 @@ window-width = 10000
 term = "xterm-256color"
 keybind = shift+enter=text:\n
 
+# Use nightly build
+auto-update-channel = tip
+
+# 最後の Window が消えた時にプロセスごと消えるかどうか
+quit-after-last-window-closed = true
+

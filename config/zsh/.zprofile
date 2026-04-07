@@ -1,9 +1,13 @@
+typeset -gU path fpath cdpath
+
 export LANG='ja_JP.UTF-8'
 export LC_ALL='ja_JP.UTF-8'
 
-export XDG_CONFIG_HOME=~/.config
-export XDG_CACHE_HOME=~/.cache
-export XDG_DATA_HOME=~/.local/share
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export GOPATH="$HOME/go"
 
 # Editor
 export PAGER='less'
@@ -17,13 +21,9 @@ case "$OSTYPE" in
         ;;
 esac
 
-# Ensure path arrays do not contain duplicates
-typeset -gU path fpath cdpath
-
-# Set the list of directories that Zsh searches for programs
 path=(
-    $HOME/.bin
-    $HOME/local/bin
+    $GOPATH/bin
+    $HOME/bin
     $HOME/.local/bin
     /opt/homebrew/{sbin,bin}
     /usr/local/{sbin,bin}
@@ -31,87 +31,30 @@ path=(
     /{sbin,bin}
     $path
 )
-
 fpath=(
     $HOME/.config/zsh/completion.d
     $fpath
 )
 
 # Homebrew
-if (( $+commands[brew] )); then
-    eval "$(brew shellenv)"
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    brew_prefix="$(/opt/homebrew/bin/brew --prefix)"
+elif [[ -x /usr/local/bin/brew ]]; then
+    brew_prefix="$(/usr/local/bin/brew --prefix)"
+else
+    brew_prefix=""
+fi
+
+if [[ -n $brew_prefix ]]; then
     path=(
-        $(brew --prefix)/{sbin,bin}
-        $(brew --prefix)/opt/{gnu-sed,gnu-tar,grep}/libexec/gnubin
+        "$brew_prefix"/{sbin,bin}
+        "$brew_prefix"/opt/{gnu-sed,gnu-tar,grep}/libexec/gnubin
         $path
     )
     fpath=(
-        $(brew --prefix)/share/zsh-completions
-        $(brew --prefix)/share/zsh/{functions,site-functions}
+        "$brew_prefix"/share/zsh-completions
+        "$brew_prefix"/share/zsh/{functions,site-functions}
         $fpath
     )
+    unset brew_prefix
 fi
-
-# Added by Toolbox App
-export PATH="$PATH:/Users/km3/Library/Application Support/JetBrains/Toolbox/scripts"
-
-# pipx
-if (( $+commands[pipx] )); then
-    path=(
-        $HOME/.local/pipx
-        $path
-    )
-fi
-
-# Flutter
-if (( $+commands[flutter] )); then
-    path=(
-        $HOME/flutter/bin
-        $path
-    )
-fi
-
-# plenv
-if (( $+commands[plenv] )); then
-    path=(
-        $HOME/.plenv/bin
-        $path
-    )
-    eval "$(plenv init zsh -)"
-fi
-
-# rbenv
-if (( $+commands[rbenv] )); then
-    path=(
-        $HOME/.rbenv/bin
-        $path
-    )
-    eval "$(rbenv init zsh -)"
-fi
-
-# sdkman
-if (( $+commands[sdk] )); then
-    export SDKMAN_DIR="$HOME/.sdkman"
-    [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-fi
-
-# bun
-if (( $+commands[bun] )); then
-    export BUN_INSTALL="$HOME/.bun"
-    path=(
-        $BUN_INSTALL/bin
-        $path
-    )
-fi
-
-# go
-if (( $+commands[go] )); then
-    export GOPATH="$HOME/go"
-    path=(
-        $GOPATH/bin
-        $path
-    )
-fi
-
-# iTerm2 shell integration
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true

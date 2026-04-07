@@ -37,10 +37,10 @@ fpath=(
 )
 
 # Homebrew
-if [[ -x /opt/homebrew/bin/brew ]]; then
-    brew_prefix="$(/opt/homebrew/bin/brew --prefix)"
-elif [[ -x /usr/local/bin/brew ]]; then
-    brew_prefix="$(/usr/local/bin/brew --prefix)"
+if [[ -d /opt/homebrew ]]; then
+    brew_prefix="/opt/homebrew"
+elif [[ -d /usr/local ]]; then
+    brew_prefix="/usr/local"
 else
     brew_prefix=""
 fi

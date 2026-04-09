@@ -11,6 +11,7 @@ go = "1.26.1"
 "go:github.com/k1LoW/git-wt" = "latest"
 java = "26.0.0"
 "npm:@github/copilot" = "latest"
+peco = "latest"
 
 [settings]
 experimental = true

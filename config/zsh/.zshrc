@@ -34,6 +34,7 @@ alias t='task'
 alias g='git'
 alias p='pnpm'
 alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
+alias nl='nl -b a -s ": " '
 
 eval "$(zoxide init zsh)"
 

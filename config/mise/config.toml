@@ -19,6 +19,6 @@ experimental = true
 # https://mise.jdx.dev/hooks.html#tool-level-postinstall
 postinstall = '''
 if [ -x "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh" ]; then
-  "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh"
+  "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh" "${MISE_TOOL_NAME}"
 fi
 '''

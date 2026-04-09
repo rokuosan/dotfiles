@@ -8,6 +8,12 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname "$0")" && pwd -P)"
 DOTFILES_HOME="${DOTFILES_HOME:-$(CDPATH= cd -- "${SCRIPT_DIR}/../../.." && pwd -P)}"
 TARGET_REL="config/mise/config.toml"
 TARGET="${DOTFILES_HOME}/${TARGET_REL}"
+MISE_TOOL_NAME="${1:-${MISE_TOOL_NAME:-}}"
+COMMIT_MESSAGE="chore(mise): update global config"
+
+if [ -n "${MISE_TOOL_NAME}" ]; then
+    COMMIT_MESSAGE="chore(mise): install ${MISE_TOOL_NAME}"
+fi
 
 if ! command -v git >/dev/null 2>&1; then
     warn "git is not available, skipping ${TARGET_REL} update"
@@ -33,6 +39,6 @@ if git -C "${DOTFILES_HOME}" diff --cached --quiet -- "${TARGET_REL}"; then
     exit 0
 fi
 
-if ! git -C "${DOTFILES_HOME}" commit --only -m "chore(mise): update global config" -- "${TARGET_REL}"; then
+if ! git -C "${DOTFILES_HOME}" commit --only -m "${COMMIT_MESSAGE}" -- "${TARGET_REL}"; then
     warn "failed to commit ${TARGET_REL}"
 fi

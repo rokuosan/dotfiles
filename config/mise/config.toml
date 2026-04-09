@@ -10,4 +10,6 @@ go = "1.26.1"
 "go:github.com/k1LoW/git-wt" = "latest"
 java = "26.0.0"
 "npm:@github/copilot" = "latest"
-python = "3.10"
+
+[settings]
+experimental = true

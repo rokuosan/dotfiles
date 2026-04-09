@@ -14,3 +14,11 @@ java = "26.0.0"
 
 [settings]
 experimental = true
+
+[hooks]
+# https://mise.jdx.dev/hooks.html#tool-level-postinstall
+postinstall = '''
+if [ -x "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh" ]; then
+  "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh"
+fi
+'''

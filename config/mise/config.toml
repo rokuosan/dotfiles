@@ -2,15 +2,18 @@
 hello = "echo hello from mise"
 
 [tools]
+"aqua:ajeetdsouza/zoxide" = "latest"
 "aqua:anthropics/claude-code" = "latest"
+"aqua:ariga/atlas" = "latest"
+"aqua:aws/aws-cli" = "latest"
+"aqua:go-task/task" = "latest"
 "aqua:helm/helm" = "latest"
 "aqua:kubernetes/kubectl" = "v1.34.5"
-atlas = "latest"
-aws-cli = { version = "latest", symlink_bins = "true" }
+"aqua:peco/peco" = "latest"
+"aqua:pnpm/pnpm" = "latest"
+"aqua:x-motemen/ghq" = "latest"
 deno = "2.7.9"
-gcloud = "latest"
 gh = "latest"
-ghq = "latest"
 "github:k1LoW/mo" = "latest"
 go = "1.26.1"
 "go:github.com/k1LoW/git-wt" = "latest"
@@ -18,10 +21,7 @@ java = "26.0.0"
 node = "24"
 "npm:@github/copilot" = "latest"
 "npm:@google/gemini-cli" = "latest"
-peco = "latest"
-pnpm = "latest"
-task = "latest"
-zoxide = "latest"
+"vfox:mise-plugins/vfox-gcloud" = "latest"
 
 [settings]
 experimental = true

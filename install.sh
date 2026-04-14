@@ -85,6 +85,7 @@ function main() {
 
     link "config/zsh/.zshrc" ".zshrc"
     link "config/zsh/.zprofile" ".zprofile"
+    link_dir "bin" "bin"
     link_dir "config/zsh" ".config/zsh"
 
     link_dir "config/1Password" ".config/1Password"

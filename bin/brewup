@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use utf8;
+use POSIX qw(strftime);
+
+=head1 NAME
+
+brewup - Update Homebrew and all installed packages
+
+=head1 SYNOPSIS
+
+    brewup
+
+=head1 DESCRIPTION
+
+This script updates Homebrew and all installed packages. It checks if Homebrew is installed, and if not, it provides instructions on how to install it. Then it runs the following commands in sequence:
+- brew update
+- brew upgrade
+- brew autoremove
+- brew cleanup
+Each command is executed with error handling, and the script prints timestamps and command information in color if the output is a terminal.
+
+=cut
+
+my $brew_install_command = '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
+my $is_tty = -t STDOUT;
+my $timestamp_color = $is_tty ? "\e[36m" : q{};
+my $command_color = $is_tty ? "\e[32m" : q{};
+my $reset_color = $is_tty ? "\e[0m" : q{};
+
+my $commands = [
+    [qw(brew update)],
+    [qw(brew upgrade)],
+    [qw(brew autoremove)],
+    [qw(brew cleanup)],
+];
+
+ensure_brew_exists();
+
+for my $command (@{$commands}) {
+    run_command($command);
+}
+
+sub ensure_brew_exists {
+    return if find_in_path('brew');
+
+    die "Homebrew is not installed.\nInstall it with:\n$brew_install_command\n";
+}
+
+sub find_in_path {
+    my ($command) = @_;
+
+    for my $dir (split /:/, $ENV{PATH} // q{}) {
+        my $path = "$dir/$command";
+        return $path if -f $path && -x _;
+    }
+
+    return;
+}
+
+sub run_command {
+    my ($command) = @_;
+    my $command_text = join q{ }, @{$command};
+    my $timestamp = strftime '%Y-%m-%d %H:%M:%S', localtime;
+
+    print "${timestamp_color}[$timestamp]${reset_color} ${command_color}$command_text${reset_color}\n";
+    system @{$command};
+
+    if ($? == -1) {
+        die "failed to execute $command_text: $!\n";
+    }
+
+    if ($? & 127) {
+        die sprintf "%s terminated by signal %d\n", $command_text, ($? & 127);
+    }
+
+    my $exit_code = $? >> 8;
+    if ($exit_code != 0) {
+        die sprintf "%s exited with status %d\n", $command_text, $exit_code;
+    }
+}

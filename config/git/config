@@ -23,5 +23,8 @@
 	autoSetupRemote = true
 [alias]
 	sw = switch
+	st = status
+	c = commit
+	ch = cherry-pick
 [wt]
 	basedir = .worktrees

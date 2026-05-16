@@ -25,7 +25,7 @@ fi
 # Aliases
 alias today='date "+%Y-%m-%d"'
 alias ls='ls -G --color=auto'
-alias ll='ls -G --color=auto -l'
+alias ll='ls -G --color=auto -la'
 alias path='echo $PATH | tr ":" "\n"'
 alias q='exit'
 alias v='nvim'

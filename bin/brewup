@@ -4,13 +4,20 @@ use warnings;
 use utf8;
 use POSIX qw(strftime);
 
+use FindBin;
+use lib "$FindBin::Bin/lib";
+
+use CLI::Arguments;
+use CLI::Runner;
+
 =head1 NAME
 
 brewup - Update Homebrew and all installed packages
 
 =head1 SYNOPSIS
 
-    brewup
+    $ brewup --dry-run (or -n to only print commands without executing)
+    $ brewup
 
 =head1 DESCRIPTION
 
@@ -23,60 +30,54 @@ Each command is executed with error handling, and the script prints timestamps a
 
 =cut
 
-my $brew_install_command = '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
-my $is_tty = -t STDOUT;
-my $timestamp_color = $is_tty ? "\e[36m" : q{};
-my $command_color = $is_tty ? "\e[32m" : q{};
-my $reset_color = $is_tty ? "\e[0m" : q{};
+my $PATH = [ split(/:/, ($ENV{PATH} // q{})) ];
+my $BREW_INSTALL_COMMAND = '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
+die "Homebrew is not installed.\nInstall it with:\n$BREW_INSTALL_COMMAND\n" unless grep {
+    my $p = "$_/" . 'brew';
+    -f $p && -x $p;
+} @$PATH;
 
-my $commands = [
+my $COMMANDS = [
     [qw(brew update)],
+    [qw(brew upgrade --cask)],
     [qw(brew upgrade)],
     [qw(brew autoremove)],
     [qw(brew cleanup)],
 ];
 
-ensure_brew_exists();
+my $runner = CLI::Runner->new;
+my $arg_parser = CLI::Arguments->new(
+    {
+        name => 'dry-run',
+        alias => 'n',
+        description => 'Only print commands without executing',
+    },
+    {
+        name => 'help',
+        alias => 'h',
+        description => 'Show this help message',
+    }
+);
 
-for my $command (@{$commands}) {
-    run_command($command);
+my $args;
+eval {
+    $args = $arg_parser->parse(@ARGV);
+};
+if ($@) {
+    die "Error parsing arguments: $@\nUse --help to see available options.\n";
+}
+if ($args->{'help'}) {
+    print "Usage: brewup [options]\n\nOptions:\n";
+    for my $arg (@{$arg_parser->{_args}}) {
+        printf "  --%-10s -%s  %s\n", $arg->{name}, $arg->{alias} // '', $arg->{description};
+    }
+    exit 0;
 }
 
-sub ensure_brew_exists {
-    return if find_in_path('brew');
 
-    die "Homebrew is not installed.\nInstall it with:\n$brew_install_command\n";
-}
-
-sub find_in_path {
-    my ($command) = @_;
-
-    for my $dir (split /:/, $ENV{PATH} // q{}) {
-        my $path = "$dir/$command";
-        return $path if -f $path && -x _;
-    }
-
-    return;
-}
-
-sub run_command {
-    my ($command) = @_;
-    my $command_text = join q{ }, @{$command};
-    my $timestamp = strftime '%Y-%m-%d %H:%M:%S', localtime;
-
-    print "${timestamp_color}[$timestamp]${reset_color} ${command_color}$command_text${reset_color}\n";
-    system @{$command};
-
-    if ($? == -1) {
-        die "failed to execute $command_text: $!\n";
-    }
-
-    if ($? & 127) {
-        die sprintf "%s terminated by signal %d\n", $command_text, ($? & 127);
-    }
-
-    my $exit_code = $? >> 8;
-    if ($exit_code != 0) {
-        die sprintf "%s exited with status %d\n", $command_text, $exit_code;
-    }
+for my $command (@{$COMMANDS}) {
+    $runner->run($command, {
+        print_command => 1,
+        dry_run => $args->{ 'dry-run' },
+    });
 }

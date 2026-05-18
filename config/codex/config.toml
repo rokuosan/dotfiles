@@ -16,6 +16,9 @@ status_line = ["model-with-reasoning", "current-dir", "model", "git-branch", "co
 [plugins."github@openai-curated"]
 enabled = true
 
+[plugins."cloudflare@openai-curated"]
+enabled = true
+
 # NOTE: MCP
 # See: https://developers.openai.com/codex/mcp
 [mcp_servers.github]
@@ -30,6 +33,14 @@ args = ["dlx", "@playwright/mcp@latest"]
 command = "pnpm"
 args = ["dlx", "chrome-devtools-mcp@latest", "--autoConnect"]
 
+[mcp_servers.openai_developer_docs]
+url = "https://developers.openai.com/mcp"
+
+[mcp_servers.cloudflare_docs]
+url = "https://docs.mcp.cloudflare.com/mcp"
+
+[mcp_servers.cloudflare_docs.tools.search_cloudflare_documentation]
+approval_mode = "approve"
 
 # NOTE: Feature Flags
 # See: https://developers.openai.com/codex/config-basic#feature-flags

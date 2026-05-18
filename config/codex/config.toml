@@ -5,6 +5,16 @@ sandbox_mode = "workspace-write"
 approval_policy = "untrusted"
 
 [profiles.default]
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+approval_policy = "untrusted"
+
+[profiles.deep-review]
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+approval_policy = "never"
+
+[tui]
 status_line = [
     "model-with-reasoning",
     "current-dir",
@@ -100,3 +110,8 @@ undo = true
 [projects."/Users/rokuosan/repo/github.com/rokuosan/github-issue-cms"]
 trust_level = "trusted"
 
+[projects."/Users/rokuosan/dotfiles"]
+trust_level = "trusted"
+
+[projects."/Users/rokuosan/repo/github.com/rokuosan/cos"]
+trust_level = "trusted"

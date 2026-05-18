@@ -34,3 +34,6 @@ experimental = true
 #   "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh" "${MISE_TOOL_NAME}"
 # fi
 # '''
+
+[settings.github]
+credential_command = "gh auth token --hostname github.com"

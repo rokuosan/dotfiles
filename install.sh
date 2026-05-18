@@ -89,12 +89,14 @@ function main() {
     link_dir "config/zsh" ".config/zsh"
 
     link_dir "config/1Password" ".config/1Password"
+    link "config/codex/config.toml" ".codex/config.toml"
     link_dir "config/gh" ".config/gh"
     link_dir "config/ghostty" ".config/ghostty"
     link_dir "config/git" ".config/git"
     link_dir "config/mise" ".config/mise"
     link_dir "config/nvim" ".config/nvim"
     link_dir "config/peco" ".config/peco"
+    link_dir "config/pnpm" ".config/pnpm"
     link_dir "config/starship" ".config/starship"
 }
 

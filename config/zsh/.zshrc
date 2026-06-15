@@ -28,6 +28,8 @@ alias ls='ls -G --color=auto'
 alias ll='ls -G --color=auto -la'
 alias path='echo $PATH | tr ":" "\n"'
 alias q='exit'
+alias qq='exit'
+alias "/exit"="exit"
 alias k='kubectl'
 alias t='task'
 alias g='git'

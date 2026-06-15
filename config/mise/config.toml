@@ -12,7 +12,9 @@ hello = "echo hello from mise"
 "aqua:peco/peco" = "latest"
 "aqua:pnpm/pnpm" = "latest"
 "aqua:x-motemen/ghq" = "latest"
+aube = "latest"
 bat = "latest"
+deno = "latest"
 gh = "latest"
 "github:k1LoW/mo" = "latest"
 go = "latest"
@@ -23,7 +25,10 @@ lazygit = "latest"
 node = "26.1.0"
 "npm:@github/copilot" = "latest"
 "npm:@google/gemini-cli" = "latest"
+usage = "latest"
 "vfox:mise-plugins/vfox-gcloud" = "latest"
+watchexec = "latest"
+yt-dlp = { version = "latest", rename_exe = "yt-dlp" }
 
 [settings]
 experimental = true

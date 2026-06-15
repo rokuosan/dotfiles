@@ -39,8 +39,8 @@ die "Homebrew is not installed.\nInstall it with:\n$BREW_INSTALL_COMMAND\n" unle
 
 my $COMMANDS = [
     [qw(brew update)],
-    [qw(brew upgrade --cask)],
-    [qw(brew upgrade)],
+    [qw(brew upgrade -y --cask)],
+    [qw(brew upgrade -y)],
     [qw(brew autoremove)],
     [qw(brew cleanup)],
 ];

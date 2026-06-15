@@ -1,18 +1,9 @@
 model = "gpt-5.5"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "high"
 
 sandbox_mode = "workspace-write"
 approval_policy = "untrusted"
 
-[profiles.default]
-model = "gpt-5.4"
-model_reasoning_effort = "high"
-approval_policy = "untrusted"
-
-[profiles.deep-review]
-model = "gpt-5.5"
-model_reasoning_effort = "high"
-approval_policy = "never"
 
 [tui]
 status_line = [
@@ -40,6 +31,18 @@ status_line = [
 enabled = true
 
 [plugins."cloudflare@openai-curated"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
 enabled = true
 
 # NOTE: MCP

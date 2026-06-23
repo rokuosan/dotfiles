@@ -4,42 +4,34 @@ hello = "echo hello from mise"
 [tools]
 "aqua:ajeetdsouza/zoxide" = "latest"
 "aqua:anthropics/claude-code" = "latest"
-"aqua:ariga/atlas" = "latest"
 "aqua:aws/aws-cli" = "latest"
 "aqua:go-task/task" = "latest"
-"aqua:helm/helm" = "latest"
-"aqua:kubernetes/kubectl" = "v1.34.5"
 "aqua:peco/peco" = "latest"
 "aqua:pnpm/pnpm" = "latest"
 "aqua:x-motemen/ghq" = "latest"
-aube = "latest"
 bat = "latest"
 deno = "latest"
 gh = "latest"
 "github:k1LoW/mo" = "latest"
+"github:rokuosan/git-wtclean" = "v0.1.0"
 go = "latest"
 "go:github.com/fujimura/git-gsub" = "latest"
 "go:github.com/k1LoW/git-wt" = "latest"
 java = "26.0.0"
 lazygit = "latest"
 node = "26.1.0"
-"npm:@github/copilot" = "latest"
-"npm:@google/gemini-cli" = "latest"
+"npm:@helpfeel/cosense-cli" = "latest"
 usage = "latest"
 "vfox:mise-plugins/vfox-gcloud" = "latest"
+viteplus = "latest"
 watchexec = "latest"
-yt-dlp = { version = "latest", rename_exe = "yt-dlp" }
 
 [settings]
 experimental = true
 
-[hooks]
-# https://mise.jdx.dev/hooks.html#tool-level-postinstall
-# postinstall = '''
-# if [ -x "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh" ]; then
-#   "${HOME}/.config/mise/bin/commit-managed-mise-toml.sh" "${MISE_TOOL_NAME}"
-# fi
-# '''
+trusted_config_paths = [
+    '~/repo/github.com/rokuosan',
+]
 
 [settings.github]
 credential_command = "gh auth token --hostname github.com"

@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  verify -s SIGNATURE [options] [file]
+
+Verify data against an SSH signature using the OpenSSH key stored in 1Password.
+
+Options:
+  -s, --signature FILE       SSH signature file
+  -r, --ref OP_REFERENCE     Override the 1Password secret reference
+  -n, --namespace NAME       SSH signature namespace (default: file)
+  -I, --identity NAME        Signer identity used for allowed signers (default: signer)
+  -h, --help                 Show this help
+
+If file is omitted, data is read from stdin.
+USAGE
+}
+
+die() {
+  printf 'verify: %s\n' "$*" >&2
+  exit 1
+}
+
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is not installed or not in PATH"
+}
+
+key_ref="${OP_SSH_SIGN_KEY_REF:-op://token/id_ed25519/private key}"
+namespace="${OP_SSH_SIGN_NAMESPACE:-file}"
+identity="${OP_SSH_SIGN_IDENTITY:-signer}"
+signature=""
+input=""
+
+while (($#)); do
+  case "$1" in
+    -s|--signature)
+      (($# >= 2)) || die "$1 requires a value"
+      signature="$2"
+      shift 2
+      ;;
+    -r|--ref)
+      (($# >= 2)) || die "$1 requires a value"
+      key_ref="$2"
+      shift 2
+      ;;
+    -n|--namespace)
+      (($# >= 2)) || die "$1 requires a value"
+      namespace="$2"
+      shift 2
+      ;;
+    -I|--identity)
+      (($# >= 2)) || die "$1 requires a value"
+      identity="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die "unknown option: $1"
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if (($# > 1)); then
+  die "only one input file is supported"
+elif (($# == 1)); then
+  input="$1"
+fi
+
+[[ -n "$signature" ]] || die "set --signature"
+[[ -r "$signature" ]] || die "signature file is not readable: $signature"
+[[ -n "$key_ref" ]] || die "set --ref or OP_SSH_SIGN_KEY_REF"
+[[ -n "$namespace" ]] || die "namespace must not be empty"
+[[ -n "$identity" ]] || die "identity must not be empty"
+if [[ -n "$input" && ! -r "$input" ]]; then
+  die "input file is not readable: $input"
+fi
+
+require_command op
+require_command ssh-keygen
+
+old_umask="$(umask)"
+umask 077
+tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/op-ssh-verify.XXXXXXXXXX")"
+trap 'rm -rf "$tmpdir"; umask "$old_umask"' EXIT HUP INT TERM
+
+key_file="$tmpdir/key"
+allowed_signers="$tmpdir/allowed_signers"
+op read --force --out-file "$key_file" "$key_ref" >/dev/null
+chmod 600 "$key_file"
+
+printf '%s %s\n' "$identity" "$(ssh-keygen -y -f "$key_file")" > "$allowed_signers"
+
+verify_args=(-Y verify -f "$allowed_signers" -I "$identity" -n "$namespace" -s "$signature")
+
+if [[ -n "$input" ]]; then
+  ssh-keygen "${verify_args[@]}" < "$input"
+else
+  ssh-keygen "${verify_args[@]}"
+fi

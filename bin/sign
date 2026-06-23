@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  sign [options] [file]
+
+Sign arbitrary data with an OpenSSH private key stored in 1Password.
+
+Options:
+  -r, --ref OP_REFERENCE     Override the 1Password secret reference
+  -n, --namespace NAME       SSH signature namespace (default: file)
+  -o, --output FILE          Write signature to FILE
+  --hashalg sha256|sha512    Hash algorithm passed to ssh-keygen (default: sha512)
+  -h, --help                 Show this help
+
+If file is omitted, data is read from stdin and the signature is written to
+stdout unless --output is specified.
+
+When file is specified without --output, ssh-keygen writes file.sig.
+USAGE
+}
+
+die() {
+  printf 'sign: %s\n' "$*" >&2
+  exit 1
+}
+
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is not installed or not in PATH"
+}
+
+key_ref="${OP_SSH_SIGN_KEY_REF:-op://token/id_ed25519/private key}"
+namespace="${OP_SSH_SIGN_NAMESPACE:-file}"
+hashalg="sha512"
+output=""
+input=""
+
+while (($#)); do
+  case "$1" in
+    -r|--ref)
+      (($# >= 2)) || die "$1 requires a value"
+      key_ref="$2"
+      shift 2
+      ;;
+    -n|--namespace)
+      (($# >= 2)) || die "$1 requires a value"
+      namespace="$2"
+      shift 2
+      ;;
+    -o|--output)
+      (($# >= 2)) || die "$1 requires a value"
+      output="$2"
+      shift 2
+      ;;
+    --hashalg)
+      (($# >= 2)) || die "$1 requires a value"
+      hashalg="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die "unknown option: $1"
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if (($# > 1)); then
+  die "only one input file is supported"
+elif (($# == 1)); then
+  input="$1"
+fi
+
+[[ -n "$key_ref" ]] || die "set --ref or OP_SSH_SIGN_KEY_REF"
+[[ -n "$namespace" ]] || die "namespace must not be empty"
+case "$hashalg" in
+  sha256|sha512) ;;
+  *) die "--hashalg must be sha256 or sha512" ;;
+esac
+if [[ -n "$input" && ! -r "$input" ]]; then
+  die "input file is not readable: $input"
+fi
+require_command op
+require_command ssh-keygen
+
+old_umask="$(umask)"
+umask 077
+tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/op-ssh-sign.XXXXXXXXXX")"
+trap 'rm -rf "$tmpdir"; umask "$old_umask"' EXIT HUP INT TERM
+
+key_file="$tmpdir/key"
+op read --force --out-file "$key_file" "$key_ref" >/dev/null
+chmod 600 "$key_file"
+
+sign_args=(-q -Y sign -f "$key_file" -n "$namespace" -O "hashalg=$hashalg")
+
+if [[ -n "$output" ]]; then
+  if [[ -n "$input" ]]; then
+    ssh-keygen "${sign_args[@]}" < "$input" > "$output"
+  else
+    ssh-keygen "${sign_args[@]}" > "$output"
+  fi
+elif [[ -n "$input" ]]; then
+  ssh-keygen "${sign_args[@]}" "$input"
+else
+  ssh-keygen "${sign_args[@]}"
+fi

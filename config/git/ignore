@@ -7,3 +7,5 @@ rokuosan-workspace/**
 .worktree/**
 
 .env
+
+node_modules

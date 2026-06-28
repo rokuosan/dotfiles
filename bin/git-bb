@@ -1,0 +1,8 @@
+#!/bin/sh
+
+git reflog --grep-reflog='checkout: moving' |
+  sed -nE 's/.*checkout: moving from [^ ]+ to ([^ ]+)$/\1/p' |
+  awk '!seen[$0]++' |
+  while read -r branch; do
+    git show-ref --verify --quiet "refs/heads/$branch" && printf '%s\n' "$branch"
+  done

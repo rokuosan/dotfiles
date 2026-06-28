@@ -71,6 +71,17 @@ if (( $+commands[peco] )); then
     }
     zle -N peco-action-menu
     bindkey '^\' peco-action-menu
+
+    git-bb-with-peco() {
+        local branch
+        branch=$(git-bb | peco) || return
+        [[ -n $branch ]] || return
+        BUFFER="git switch ${(q)branch}"
+        zle accept-line
+    }
+    zle -N git-bb-with-peco
+    bindkey '^[[44;5u' git-bb-with-peco
+
 fi
 
 # Taskfile runner

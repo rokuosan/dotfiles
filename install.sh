@@ -98,6 +98,7 @@ function main() {
     link_dir "config/peco" ".config/peco"
     link_dir "config/pnpm" ".config/pnpm"
     link_dir "config/starship" ".config/starship"
+    link_dir "config/wezterm" ".config/wezterm"
 }
 
 main "$@"

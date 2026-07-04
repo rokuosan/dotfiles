@@ -56,8 +56,6 @@ if (( ${+commands[bat]} )); then
     alias cat="bat"
 fi
 
-# if (( ${+commands[op]} )); then
-#     export GITHUB_PAT_TOKEN="$(op read --no-newline "op://Private/gru6zlk3lxjkc7rtiicz54fz7m/credential")"
-# fi
-
-export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+if (( ${+commands[op]} )); then
+    export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+fi

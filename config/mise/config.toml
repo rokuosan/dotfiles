@@ -29,7 +29,11 @@ watchexec = "latest"
 [settings]
 experimental = true
 
-trusted_config_paths = ['~/repo/github.com/rokuosan']
+trusted_config_paths = [
+'~/repo/github.com/rokuosan',
+'~/repo/github.com/yaken-org/',
+'~/repo/github.com/wsoft-ws/',
+]
 
 minimum_release_age = "24h"
 minimum_release_age_excludes = ["npm:@helpfeel/cosense-cli"]

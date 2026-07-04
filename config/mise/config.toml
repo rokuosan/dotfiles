@@ -17,21 +17,22 @@ gh = "latest"
 go = "latest"
 "go:github.com/fujimura/git-gsub" = "latest"
 "go:github.com/k1LoW/git-wt" = "latest"
+"go:github.com/rokuosan/qrg" = "v0.4.0"
 java = "26.0.0"
 lazygit = "latest"
 node = "26.1.0"
 "npm:@helpfeel/cosense-cli" = "latest"
 usage = "latest"
-"vfox:mise-plugins/vfox-gcloud" = "latest"
 viteplus = "latest"
 watchexec = "latest"
 
 [settings]
 experimental = true
 
-trusted_config_paths = [
-    '~/repo/github.com/rokuosan',
-]
+trusted_config_paths = ['~/repo/github.com/rokuosan']
+
+minimum_release_age = "24h"
+minimum_release_age_excludes = ["npm:@helpfeel/cosense-cli"]
 
 [settings.github]
 credential_command = "gh auth token --hostname github.com"

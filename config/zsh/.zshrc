@@ -1,5 +1,7 @@
 bindkey -e
 
+bindkey -r '^T'
+
 ZSH_CONFIG_PATH="$HOME/.config/zsh/"
 ZSH_MODULE_PATH="$ZSH_CONFIG_PATH/module.d"
 

@@ -42,6 +42,16 @@ config.quit_when_all_windows_are_closed = true
 
 config.keys = {
   {
+    key = "Tab",
+    mods = "CTRL",
+    action = act.SendString("]b"),
+  },
+  {
+    key = "Tab",
+    mods = "CTRL|SHIFT",
+    action = act.SendString("[b"),
+  },
+  {
     key = "d",
     mods = "CMD",
     action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),

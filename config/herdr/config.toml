@@ -120,6 +120,10 @@ prefix = "ctrl+t"
 # key = "prefix+alt+g"
 # type = "pane"
 # command = "lazygit"
+[[keys.command]]
+key = "prefix+shift+l"
+type = "pane"
+command = "lazygit"
 
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.

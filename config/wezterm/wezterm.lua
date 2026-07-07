@@ -10,8 +10,9 @@ end)
 local config = wezterm.config_builder()
 
 config.font = wezterm.font_with_fallback({
-  "CaskaydiaMono Nerd Font Mono",
-  "UDEV Gothic 35NF",
+	"CaskaydiaMono Nerd Font Mono",
+	{ family = "Hiragino Sans", weight = "Regular" },
+	"Hiragino Kaku Gothic ProN",
 })
 config.font_size = 16
 config.harfbuzz_features = {

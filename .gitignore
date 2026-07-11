@@ -2,3 +2,5 @@ backup/**
 !backup/.gitkeep
 
 .DS_Store
+
+*.local.*

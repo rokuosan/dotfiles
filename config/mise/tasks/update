@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+#MISE description="Update the system and install essential packages"
+set -euo pipefail
+
+if (( ${+commands[brew]} )); then
+  brew update
+  brew upgrade -y
+  brew autoremove
+  brew cleanup -s
+fi
+
+mise self-update -y
+mise upgrade -y

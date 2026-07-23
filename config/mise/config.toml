@@ -1,6 +1,10 @@
 [tasks]
 hello = "echo hello from mise"
 
+[shell_alias]
+p = "pnpm"
+g = "git"
+
 [tools]
 "aqua:ajeetdsouza/zoxide" = "latest"
 "aqua:anthropics/claude-code" = "latest"

@@ -26,6 +26,7 @@ fi
 
 # Aliases
 alias today='date "+%Y-%m-%d"'
+alias todaydir='mkdir -p $(date "+%Y-%m-%d")'
 alias ls='ls -G --color=auto'
 alias ll='ls -G --color=auto -la'
 alias path='echo $PATH | tr ":" "\n"'
@@ -33,9 +34,7 @@ alias q='exit'
 alias qq='exit'
 alias "/exit"="exit"
 alias k='kubectl'
-alias t='task'
 alias g='git'
-alias p='pnpm'
 alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
 alias nl='nl -b a -s ": " '
 

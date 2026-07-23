@@ -33,6 +33,7 @@ usage = "latest"
 uv = "latest"
 viteplus = "latest"
 watchexec = "latest"
+fzf = "latest"
 
 [settings]
 experimental = true

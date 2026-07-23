@@ -51,7 +51,7 @@ if (( ${+commands[codex]} )); then
 fi
 
 if (( ${+commands[zoxide]} )); then
-    eval "$(zoxide init zsh)"
+    [[ $- == *i* ]] && eval "$(zoxide init zsh --cmd cd)"
 fi
 
 if (( ${+commands[bat]} )); then

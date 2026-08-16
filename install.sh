@@ -91,6 +91,7 @@ function main() {
     link_dir "config/1Password" ".config/1Password"
     link_dir "agents/skills" ".agents/skills"
     link_dir "agents/skills" ".claude/skills"
+    link "config/claude/settings.json" ".claude/settings.json"
     link "config/codex/config.toml" ".codex/config.toml"
     link_dir "config/gh" ".config/gh"
     link_dir "config/ghostty" ".config/ghostty"

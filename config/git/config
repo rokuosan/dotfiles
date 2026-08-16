@@ -1,6 +1,6 @@
 [user]
 	name = Koki Matsumoto
-  email = git@rokuosan.dev
+	email = git@rokuosan.dev
 	signingkey = ~/.config/git/keys/personal.pub
 [core]
 	autocrlf = input

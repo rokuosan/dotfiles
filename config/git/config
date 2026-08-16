@@ -2,9 +2,10 @@
 	name = Koki Matsumoto
 	# email = 85651386+rokuosan@users.noreply.github.com
   email = git@rokuosan.dev
-	signingkey = "key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILev6Za0DXSQD094X4758PtrMgd9uPXK3uG1xLIojQn/"
+	signingkey = ~/.config/git/keys/personal.pub
 [core]
 	autocrlf = input
+	sshCommand = ssh -i ~/.config/git/keys/personal.pub -o IdentitiesOnly=yes
 [pull]
 	rebase = false
 [commit]

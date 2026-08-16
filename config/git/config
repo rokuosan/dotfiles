@@ -1,6 +1,5 @@
 [user]
 	name = Koki Matsumoto
-	# email = 85651386+rokuosan@users.noreply.github.com
   email = git@rokuosan.dev
 	signingkey = ~/.config/git/keys/personal.pub
 [core]

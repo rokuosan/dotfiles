@@ -5,6 +5,7 @@ rokuosan-workspace/**
 
 # git-wt
 .worktree/**
+.wt/**
 
 .env
 

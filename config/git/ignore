@@ -1,15 +1,67 @@
+# cache
+.cache
+.cache/**
+.parcel-cache
+
+# macOS
 .DS_Store
 
-# 各リポジトリで自分自身の作業スペースを確保したい
-rokuosan-workspace/**
+# private workspace
+.rokuosan/**
 
 # git-wt
 .worktree/**
 .wt/**
 
+# Env
 .env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
 
-node_modules
+# Node.js
+node_modules/**
+jspm_packages/
+.next
+.npm
+.pnpm-store
+*.tsbuildinfo
 
 # Claude Code
 **/.claude/settings.local.json
+
+# IDE
+.idea/**
+
+# Temporary files
+**/tmp/**
+**/temp/**
+
+# Compressed files
+*.tgz
+*.zip
+
+# Gradle
+# ref: https://github.com/github/gitignore/blob/361f1e6afa729dc58ec33bf0849772a03ddf6822/Gradle.gitignore#L1-L21
+.gradle
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+.project
+.classpath
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Coverage
+lib-cov
+coverage
+*.lcov
+

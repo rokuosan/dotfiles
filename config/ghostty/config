@@ -1,19 +1,8 @@
-# Theme Settings
-# theme = "catppuccin-macchiato"
-# theme = "NvimDark"
-# theme = "Monokai Pro Machine"
 theme = "TokyoNight Moon"
-# theme = "Arcoiris"
-# theme = "Dimidium"
 
-# Font Settings 日本語
+# Fonts
 font-family = "CaskaydiaMono Nerd Font Mono"
 font-family = "UDEV Gothic 35NF"
-# font-family = "BIZ UDGothic"
-# font-family = "HackGen Console NF"
-# font-family = "Plemol JP Console NF"
-# font-family = 'HackGen Console NF'
-# font-family = 'Google Sans Code'
 font-feature = "-calt"
 font-feature = "-dlig"
 font-feature = "-liga"
@@ -36,10 +25,8 @@ window-width = 10000
 term = "xterm-256color"
 keybind = shift+enter=text:\n
 
-# Use nightly build
+
+# misc
 auto-update-channel = tip
-
-# 最後の Window が消えた時にプロセスごと消えるかどうか
 quit-after-last-window-closed = true
-
 macos-option-as-alt = left

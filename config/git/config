@@ -4,7 +4,6 @@
 	signingkey = ~/.config/git/keys/personal.pub
 [core]
 	autocrlf = input
-	sshCommand = ssh -i ~/.config/git/keys/personal.pub -o IdentitiesOnly=yes
 [pull]
 	rebase = false
 [commit]

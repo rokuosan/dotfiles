@@ -6,13 +6,6 @@ p = "pnpm"
 g = "git"
 
 [tools]
-"aqua:ajeetdsouza/zoxide" = "latest"
-"aqua:anthropics/claude-code" = "latest"
-"aqua:aws/aws-cli" = "latest"
-"aqua:go-task/task" = "latest"
-"aqua:peco/peco" = "latest"
-"aqua:pnpm/pnpm" = "latest"
-"aqua:x-motemen/ghq" = "latest"
 bat = "latest"
 deno = "latest"
 fd = "latest"
@@ -35,9 +28,15 @@ ripgrep = "latest"
 perl = "5.42.0"
 usage = "latest"
 uv = "latest"
-viteplus = "latest"
 watchexec = "latest"
 fzf = "latest"
+zoxide = "latest"
+task = "latest"
+peco = "latest"
+pnpm = "latest"
+ghq = "latest"
+aws-cli = { version = "latest", symlink_bins = "true" }
+claude = "latest"
 
 [settings]
 experimental = true

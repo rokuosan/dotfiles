@@ -4,6 +4,8 @@ hello = "echo hello from mise"
 [shell_alias]
 p = "pnpm"
 g = "git"
+today = 'date "+%Y-%m-%d"'
+todaydir = 'mkdir -p $(date "+%Y-%m-%d")'
 
 [tools]
 bat = "latest"

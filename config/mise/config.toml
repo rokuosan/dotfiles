@@ -20,7 +20,7 @@ go = "latest"
 "go:github.com/k1LoW/git-wt" = "latest"
 "go:github.com/rokuosan/qrg" = "v0.4.0"
 herdr = "latest"
-java = "26.0.0"
+java = "26"
 lazygit = "latest"
 node = "24"
 "npm:@helpfeel/cosense-cli" = "latest"
@@ -39,6 +39,7 @@ pnpm = "latest"
 ghq = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 claude = "latest"
+python = "3.14.8"
 
 [settings]
 experimental = true

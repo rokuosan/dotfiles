@@ -25,16 +25,13 @@ if [[ -f "$HOME/.zshrc.local" ]]; then
 fi
 
 # Aliases
-alias today='date "+%Y-%m-%d"'
-alias todaydir='mkdir -p $(date "+%Y-%m-%d")'
 alias ls='ls -G --color=auto'
 alias ll='ls -G --color=auto -la'
-alias path='echo $PATH | tr ":" "\n"'
+alias path='echo $PATH | tr ":" "\n" | less'
 alias q='exit'
 alias qq='exit'
 alias "/exit"="exit"
 alias k='kubectl'
-alias g='git'
 alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
 alias nl='nl -b a -s ": " '
 

@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  unlockpdf input.pdf [-o output.pdf]
+
+Decrypt a PDF with qpdf. If output is omitted, input-unlocked.pdf is created.
+
+Options:
+  -o, --output FILE  Write the unlocked PDF to FILE
+  -h, --help         Show this help
+USAGE
+}
+
+die() {
+  printf 'unlockpdf: %s\n' "$*" >&2
+  exit 1
+}
+
+input=""
+output=""
+
+while (($#)); do
+  case "$1" in
+    -o|--output)
+      (($# >= 2)) || die "$1 requires a value"
+      [[ -n "$2" ]] || die "$1 requires a non-empty value"
+      output="$2"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      die "unknown option: $1"
+      ;;
+    *)
+      [[ -z "$input" ]] || die "only one input file is supported"
+      input="$1"
+      shift
+      ;;
+  esac
+done
+
+if (($#)); then
+  [[ -z "$input" ]] || die "only one input file is supported"
+  (($# == 1)) || die "only one input file is supported"
+  input="$1"
+fi
+
+[[ -n "$input" ]] || die "input file is required"
+[[ -r "$input" ]] || die "input file is not readable: $input"
+
+if [[ -z "$output" ]]; then
+  if [[ "$input" == *.pdf ]]; then
+    output="${input%.pdf}-unlocked.pdf"
+  else
+    output="${input}-unlocked.pdf"
+  fi
+fi
+
+[[ "$input" != "$output" ]] || die "input and output files must be different"
+command -v qpdf >/dev/null 2>&1 || die "qpdf is not installed or not in PATH"
+[[ -r /dev/tty && -w /dev/tty ]] || die "a terminal is required to enter the password"
+
+printf 'Password: ' > /dev/tty
+IFS= read -r -s password < /dev/tty || die "could not read password"
+printf '\n' > /dev/tty
+qpdf --password="$password" --decrypt "$input" "$output"
+unset password

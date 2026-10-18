@@ -24,7 +24,6 @@ java = "26"
 lazygit = "latest"
 node = "24"
 "npm:@helpfeel/cosense-cli" = "latest"
-"npm:@openai/codex" = "latest"
 opencode = "latest"
 ripgrep = "latest"
 perl = "5.42.0"
@@ -40,6 +39,9 @@ ghq = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 claude = "latest"
 python = "3.14.8"
+codex = "latest"
+"npm:cf" = " v1.0.0-beta.17"
+bun = "latest"
 
 [settings]
 experimental = true

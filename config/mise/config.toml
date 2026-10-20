@@ -50,6 +50,7 @@ bun = "latest"
 
 [settings]
 experimental = true
+self_update.auto=true
 
 trusted_config_paths = [
 '~/repo/github.com/rokuosan',

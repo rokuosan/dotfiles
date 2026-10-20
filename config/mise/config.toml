@@ -40,6 +40,11 @@ ghq = "latest"
 aws-cli = { version = "latest", symlink_bins = "true" }
 claude = "latest"
 python = "3.14.8"
+glab = "latest"
+vscode-cli = "latest"
+aqua = "latest"
+direnv = "latest"
+"go:golang.org/x/tools/gopls" = "0.23.0"
 
 [settings]
 experimental = true

@@ -1,7 +1,8 @@
-model = "gpt-5.5"
-model_reasoning_effort = "high"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
 
 sandbox_mode = "workspace-write"
+service_tier = "default"
 
 
 [tui]
@@ -19,9 +20,12 @@ status_line = [
     "fast-mode",
     "task-progress",
 ]
+screen_reader_detection_done = true
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
+gpt-6-astra = 4
+"gpt-6.1-sol" = 4
 
 
 # NOTE: Plugins
@@ -117,3 +121,15 @@ trust_level = "trusted"
 
 [projects."/Users/rokuosan/repo/github.com/rokuosan/cos"]
 trust_level = "trusted"
+
+[projects."/Users/rokuosan/repo/gitlab.tanuking.dev/pixiv/ads/pam"]
+trust_level = "trusted"
+
+[projects."/Users/rokuosan/repo/gitlab.tanuking.dev/pixiv/ads/apps"]
+trust_level = "trusted"
+
+[projects."/Users/rokuosan/repo/github.com/rokuosan/dotfiles"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.5" = "gpt-5.6-sol"

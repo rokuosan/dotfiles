@@ -1,7 +1,7 @@
 [user]
 	name = Koki Matsumoto
 	email = git@rokuosan.dev
-	signingkey = ~/.config/git/keys/personal.pub
+	signingkey = "key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILev6Za0DXSQD094X4758PtrMgd9uPXK3uG1xLIojQn/"
 [core]
 	autocrlf = input
 [pull]

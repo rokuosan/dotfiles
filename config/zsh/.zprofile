@@ -1,3 +1,7 @@
+# The following lines were added by Docker Desktop to add commands to your PATH.
+export PATH="$PATH:/Users/rokuosan/.docker/bin"
+# End of Docker Desktop section.
+
 typeset -gU path fpath cdpath
 
 export LANG='ja_JP.UTF-8'

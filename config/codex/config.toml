@@ -1,9 +1,17 @@
 model = "gpt-6.1-sol"
 model_reasoning_effort = "medium"
 
-sandbox_mode = "workspace-write"
-service_tier = "default"
+sandbox_mode = "danger-full-access"
 
+notify = ["/Users/rokuosan/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+service_tier = "default"
+approvals_reviewer = "user"
+approval_policy = "never"
+
+[model_providers.ollama-launch]
+name = "Ollama"
+base_url = "https://gateway.ai.cloudflare.com/v1/52c96a2ff3d6f958e49a8bbd1cf3553f/example-gateway/custom-example"
+env_key = "SPARK_OLLAMA_API_KEY"
 
 [tui]
 status_line = [
@@ -23,8 +31,6 @@ status_line = [
 screen_reader_detection_done = true
 
 [tui.model_availability_nux]
-"gpt-5.5" = 4
-gpt-6-astra = 4
 "gpt-6.1-sol" = 4
 
 
@@ -36,9 +42,6 @@ enabled = true
 [plugins."cloudflare@openai-curated"]
 enabled = true
 
-[plugins."browser@openai-bundled"]
-enabled = true
-
 [plugins."documents@openai-primary-runtime"]
 enabled = true
 
@@ -48,11 +51,32 @@ enabled = true
 [plugins."presentations@openai-primary-runtime"]
 enabled = true
 
-# NOTE: MCP
-# See: https://developers.openai.com/codex/mcp
-[mcp_servers.github]
-url = "https://api.githubcopilot.com/mcp/"
-bearer_token_env_var = "GITHUB_PAT_TOKEN"
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."code-review@openai-bundled"]
+enabled = true
 
 [mcp_servers.playwright]
 command = "pnpm"
@@ -65,11 +89,56 @@ args = ["dlx", "chrome-devtools-mcp@latest", "--autoConnect"]
 [mcp_servers.openai_developer_docs]
 url = "https://developers.openai.com/mcp"
 
-[mcp_servers.cloudflare_docs]
-url = "https://docs.mcp.cloudflare.com/mcp"
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node_repl"
+env_vars = ["BROWSER_USE_ACCESS_EXECUTOR_ID", "BROWSER_USE_ACCESS_PIPE_PATH", "BROWSER_USE_ACCESS_VERIFYING_IDENTITY"]
+startup_timeout_sec = 120
 
-[mcp_servers.cloudflare_docs.tools.search_cloudflare_documentation]
-approval_mode = "approve"
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = "/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/Applications/ChatGPT.app/Contents/Resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/rokuosan/.codex:/Applications/ChatGPT.app/Contents/Resources/cua_node/lib/node_modules"
+CODEX_HOME = "/Users/rokuosan/.codex"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
+BROWSER_USE_TINYSKY_ENABLED = "1"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_COMPUTER_USE = ""
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.1016.62342"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/Users/rokuosan/.codex/plugins/cache/openai-bundled/browser/26.1016.62342/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+SKY_CUA_SERVICE_PATH = "/Users/rokuosan/.codex/computer-use/Codex Computer Use.app"
+CODEX_CLI_PATH = "/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
+
+[mcp_servers.hono-docs-mcp]
+url = "https://hono-docs-mcp.yusukebe.workers.dev/mcp"
+
+[mcp_servers.computer-use]
+command = "./Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient"
+args = ["mcp"]
+cwd = "."
+enabled = false
+
+[mcp_servers.tgs_2026]
+enabled = true
+url = "https://tgs-2026-mcp.km3.workers.dev/mcp"
+
+# [mcp_servers.cloudflare]
+# url = "https://mcp.cloudflare.com/mcp"
+#
+# [mcp_servers.cloudflare-docs]
+# url = "https://docs.mcp.cloudflare.com/mcp"
+#
+# [mcp_servers.cloudflare-bindings]
+# url = "https://bindings.mcp.cloudflare.com/mcp"
+#
+# [mcp_servers.cloudflare-builds]
+# url = "https://builds.mcp.cloudflare.com/mcp"
+#
+# [mcp_servers.cloudflare-observability]
+# url = "https://observability.mcp.cloudflare.com/mcp"
 
 # NOTE: Feature Flags
 # See: https://developers.openai.com/codex/config-basic#feature-flags
@@ -112,24 +181,12 @@ unified_exec = true
 
 # Undo via per-turn git ghost snapshot
 undo = true
-
-[projects."/Users/rokuosan/repo/github.com/rokuosan/github-issue-cms"]
-trust_level = "trusted"
+js_repl = false
 
 [projects."/Users/rokuosan/dotfiles"]
 trust_level = "trusted"
 
-[projects."/Users/rokuosan/repo/github.com/rokuosan/cos"]
-trust_level = "trusted"
+[marketplaces.openai-bundled]
+source_type = "local"
+source = "/Users/rokuosan/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
-[projects."/Users/rokuosan/repo/gitlab.tanuking.dev/pixiv/ads/pam"]
-trust_level = "trusted"
-
-[projects."/Users/rokuosan/repo/gitlab.tanuking.dev/pixiv/ads/apps"]
-trust_level = "trusted"
-
-[projects."/Users/rokuosan/repo/github.com/rokuosan/dotfiles"]
-trust_level = "trusted"
-
-[notice.model_migrations]
-"gpt-5.5" = "gpt-5.6-sol"

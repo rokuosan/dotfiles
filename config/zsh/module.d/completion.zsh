@@ -1,5 +1,9 @@
 autoload -Uz compinit
 
+if [[ -d "$HOME/.docker/completions" ]]; then
+    fpath=("$HOME/.docker/completions" $fpath)
+fi
+
 zstyle ':completion:*' use-cache on
 typeset -g zsh_cache_base="${XDG_CACHE_HOME:-$HOME/.cache}"
 if [[ ! -d $zsh_cache_base && ! -w ${zsh_cache_base:h} ]]; then

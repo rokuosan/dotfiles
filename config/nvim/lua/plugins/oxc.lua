@@ -1,3 +1,10 @@
+local function local_oxc_cmd(name)
+  return function(dispatchers, config)
+    local executable = vim.fs.find("node_modules/.bin/" .. name, { path = config.root_dir, upward = true })[1] or name
+    return vim.lsp.rpc.start({ executable, "--lsp" }, dispatchers)
+  end
+end
+
 ---@type LazySpec
 return {
   "AstroNvim/astrolsp",
@@ -9,14 +16,12 @@ return {
     },
     config = {
       oxlint = {
-        cmd = { "pnpm", "exec", "vp", "lint", "--lsp" },
+        cmd = local_oxc_cmd "oxlint",
         settings = {
           fixKind = "safe_fix",
         },
       },
-      oxfmt = {
-        cmd = { "pnpm", "exec", "vp", "fmt", "--lsp" },
-      },
+      oxfmt = { cmd = local_oxc_cmd "oxfmt" },
     },
     formatting = {
       filter = function(client)

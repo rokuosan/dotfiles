@@ -13,27 +13,13 @@ return {
   "AstroNvim/astrolsp",
   ---@type AstroLSPOpts
   opts = {
-    servers = {
-      "oxfmt",
-      "oxlint",
-    },
     config = {
       oxlint = {
+        workspace_required = true,
         cmd = local_oxc_cmd("oxlint", "lint"),
-        settings = {
-          fixKind = "safe_fix",
-        },
+        settings = { fixKind = "safe_fix" },
       },
-      oxfmt = { cmd = local_oxc_cmd("oxfmt", "fmt") },
-    },
-    formatting = {
-      filter = function(client)
-        local has_oxfmt = vim
-          .iter(vim.lsp.get_clients { bufnr = 0 })
-          :any(function(attached_client) return attached_client.name == "oxfmt" end)
-
-        return not has_oxfmt or client.name == "oxfmt"
-      end,
+      eslint = { settings = { format = false } },
     },
   },
 }

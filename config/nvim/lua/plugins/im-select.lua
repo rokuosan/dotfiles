@@ -10,12 +10,10 @@ end
 
 return {
   "keaising/im-select.nvim",
-  config = function()
-    require("im_select").setup {
-      default_command = command,
-      default_im_select = "com.apple.keylayout.ABC",
-      set_default_events = { "VimEnter", "InsertLeave" },
-      set_previous_events = {},
-    }
-  end,
+  opts = {
+    default_command = command,
+    default_im_select = "com.apple.keylayout.ABC",
+    set_default_events = { "VimEnter", "InsertLeave" },
+    set_previous_events = {},
+  },
 }

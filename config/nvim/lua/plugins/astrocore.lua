@@ -4,6 +4,9 @@ return {
   ---@type AstroCoreOpts
   opts = {
     mappings = {
+      i = {
+        ["<C-c>"] = { "<Esc>", desc = "Exit insert mode" },
+      },
       n = {
         ["]b"] = {
           function() require("astrocore.buffer").nav(vim.v.count1) end,

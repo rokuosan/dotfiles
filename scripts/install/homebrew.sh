@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-DOTFILES_HOME="$(cd "$(dirname "$0")/.." && pwd)"
+DOTFILES_HOME="$(cd "$(dirname "$0")/../.." && pwd)"
 
 find_brew() {
     if command -v brew > /dev/null 2>&1; then

@@ -32,7 +32,7 @@ lua = "latest"
 [tasks."setup:brew"]
 description = "Install Homebrew and packages from Brewfile"
 dir = "{{ config_root }}"
-run = "bash scripts/setup-brew.sh"
+run = "bash scripts/install/homebrew.sh"
 
 [tasks."setup:skills"]
 description = "Install or refresh external skills for Codex and Claude Code"

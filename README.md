@@ -6,16 +6,19 @@
 # Install mise
 curl -fsSL https://mise.run | sh
 export PATH="$HOME/.local/bin:$PATH"
-# Clone the repository
-git clone --recurse-submodules https://github.com/rokuosan/dotfiles ~/.dotfiles
+# Clone the repository and submodules under the configured ghq root
+GHQ_ROOT="$HOME/repo" mise exec ghq@latest -- ghq get https://github.com/rokuosan/dotfiles
 # Change to the dotfiles directory
-cd ~/.dotfiles
+cd ~/repo/github.com/rokuosan/dotfiles
 # Trust the configuration and preview dotfile deployment
 mise trust
 mise bootstrap --only dotfiles --dry-run
 # Apply the dotfiles
 mise bootstrap --only dotfiles
 ```
+
+The ghq root is `~/repo`, matching `config/git/config`. After loading the zsh
+configuration, press `Ctrl-G` to select a repository with ghq and peco.
 
 ## Existing installations
 
@@ -31,7 +34,7 @@ missing, so application-generated settings can remain local.
 To apply only the dotfiles from outside this repository:
 
 ```sh
-mise -C ~/.dotfiles dot apply
+mise -C ~/repo/github.com/rokuosan/dotfiles dot apply
 ```
 
 ## Skills and generated integrations

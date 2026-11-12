@@ -2,6 +2,9 @@
 hello = "echo hello from mise"
 
 [shell_alias]
+encrypt = "mise run --quiet encrypt --"
+sign = "mise run --quiet sign --"
+verify = "mise run --quiet verify --"
 p = "pnpm"
 g = "git"
 today = 'date "+%Y-%m-%d"'
@@ -25,7 +28,7 @@ node = "26"
 "npm:@helpfeel/cosense-cli" = "latest"
 opencode = "latest"
 ripgrep = "latest"
-perl = "5.44.0"
+perl = "latest"
 usage = "latest"
 uv = "latest"
 watchexec = "latest"

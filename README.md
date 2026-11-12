@@ -56,6 +56,23 @@ Existing Homebrew installations are reused, including when `brew` is not on
 upgraded, and packages outside `Brewfile` are not removed. Use `brew upgrade`
 separately when you want to update them.
 
+## Utility tasks
+
+Task scripts live in `scripts/tasks/`. Dotfile deployment links this directory
+at `~/.config/mise/tasks` and links `config/mise/config.toml` separately.
+When migrating an existing `~/.config/mise` directory symlink, remove only that
+symlink before running `mise dot apply`; keep regular directories and files.
+
+`encrypt`, `sign`, and `verify` are shell aliases for their mise tasks. Reload
+the mise shell environment after applying the configuration to use them.
+Outside an interactive shell, use `mise run --quiet encrypt -- [options] [file]`
+(and similarly for `sign` and `verify`). The separator forwards options such as
+`--help` to the script. Each task uses the calling directory and requests the
+latest Perl through mise; `mise upgrade perl` updates the installed version.
+
+`git-wtclean2` keeps a launcher in `bin/` for use as `git wtclean2`; its Perl
+implementation is also a mise task. `update` is in `scripts/tasks/` as well.
+
 ## Skills and generated integrations
 
 Repository skills are linked individually into `~/.agents/skills` and

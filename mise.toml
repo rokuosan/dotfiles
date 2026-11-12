@@ -29,13 +29,13 @@ lua = "latest"
 "~/.config/starship" = { source = "config/starship" }
 "~/.config/wezterm" = { source = "config/wezterm" }
 
-[tasks."skills:install"]
+[tasks."setup:skills"]
 description = "Install or refresh external skills for Codex and Claude Code"
 run = [
   "npx --yes skills add cloudflare/skills --global --agent codex claude-code --skill '*' --copy --yes",
   "npx --yes skills add helpfeel/cosense-cli --global --agent codex claude-code --skill cosense --copy --yes",
 ]
 
-[tasks."herdr:claude"]
+[tasks."setup:herdr:claude"]
 description = "Generate the Claude Code integration using Herdr"
 run = "herdr integration install claude"

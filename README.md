@@ -44,7 +44,7 @@ are submodules; after cloning without `--recurse-submodules`, run
 Install or refresh Cloudflare and cosense skills for Codex and Claude Code:
 
 ```sh
-mise run skills:install
+mise run setup:skills
 ```
 
 Claude settings are copied only when missing. Existing settings, including
@@ -52,5 +52,5 @@ Herdr-generated hooks, stay local. After installing Herdr, generate its
 integration rather than copying the generated hook script:
 
 ```sh
-mise run herdr:claude
+mise run setup:herdr:claude
 ```

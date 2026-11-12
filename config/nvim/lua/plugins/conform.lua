@@ -25,15 +25,7 @@ return {
     opts.formatters = vim.tbl_deep_extend("force", opts.formatters or {}, {
       biome = { require_cwd = true },
       prettier = { require_cwd = true },
-      oxfmt = {
-        require_cwd = true,
-        command = function(_, ctx)
-          local oxfmt = vim.fs.find("node_modules/.bin/oxfmt", { path = ctx.dirname, upward = true })[1]
-          if oxfmt then return oxfmt end
-          return vim.fs.find("node_modules/.bin/vp", { path = ctx.dirname, upward = true })[1] or "oxfmt"
-        end,
-        prepend_args = function(self, ctx) return vim.fs.basename(self:command(ctx)) == "vp" and { "fmt" } or {} end,
-      },
+      oxfmt = { require_cwd = true },
     })
   end,
 }

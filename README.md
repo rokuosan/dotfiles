@@ -7,7 +7,7 @@
 curl -fsSL https://mise.run | sh
 export PATH="$HOME/.local/bin:$PATH"
 # Clone the repository
-git clone https://github.com/rokuosan/dotfiles ~/.dotfiles
+git clone --recurse-submodules https://github.com/rokuosan/dotfiles ~/.dotfiles
 # Change to the dotfiles directory
 cd ~/.dotfiles
 # Trust the configuration and preview dotfile deployment

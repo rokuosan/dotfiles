@@ -1,3 +1,6 @@
 [submodule "agents/skills/japanese-tech-writing"]
 	path = agents/skills/japanese-tech-writing
 	url = https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d.git
+[submodule "agents/skills/apple-container"]
+	path = agents/skills/apple-container
+	url = https://gist.github.com/306e75ce54a24379b4b505cf9c4df0cd.git

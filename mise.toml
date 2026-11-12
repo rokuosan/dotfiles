@@ -1,2 +1,23 @@
 [tools]
 lua = "latest"
+
+[dotfiles]
+"~/.zshrc" = { source = "config/zsh/.zshrc", mode = "symlink" }
+"~/.zprofile" = { source = "config/zsh/.zprofile", mode = "symlink" }
+"~/bin" = { source = "bin", mode = "symlink" }
+"~/.config/zsh" = { source = "config/zsh", mode = "symlink" }
+"~/.config/1Password" = { source = "config/1Password", mode = "symlink" }
+"~/.agents/skills" = { source = "agents/skills", mode = "symlink" }
+"~/.claude/skills" = { source = "agents/skills", mode = "symlink" }
+"~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "symlink" }
+"~/.codex/config.toml" = { source = "config/codex/config.toml", mode = "symlink" }
+"~/.config/gh" = { source = "config/gh", mode = "symlink" }
+"~/.config/ghostty" = { source = "config/ghostty", mode = "symlink" }
+"~/.config/git" = { source = "config/git", mode = "symlink" }
+"~/.config/herdr/config.toml" = { source = "config/herdr/config.toml", mode = "symlink" }
+"~/.config/mise" = { source = "config/mise", mode = "symlink" }
+"~/.config/nvim" = { source = "config/nvim", mode = "symlink" }
+"~/.config/peco" = { source = "config/peco", mode = "symlink" }
+"~/.config/pnpm" = { source = "config/pnpm", mode = "symlink" }
+"~/.config/starship" = { source = "config/starship", mode = "symlink" }
+"~/.config/wezterm" = { source = "config/wezterm", mode = "symlink" }

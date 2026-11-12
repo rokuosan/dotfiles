@@ -1,5 +1,9 @@
 [tools]
 lua = "latest"
+perl = {
+  version = "latest",
+  postinstall = "env -u NO_COLOR cpanm --quiet --mirror https://cpan.metacpan.org --mirror-only Perl::Tidy Perl::Critic"
+}
 
 [dotfiles]
 "~/bin" = { source = "bin" }
@@ -45,3 +49,15 @@ run = [
 [tasks."setup:herdr:claude"]
 description = "Generate the Claude Code integration using Herdr"
 run = "herdr integration install claude"
+
+[tasks."format:perl"]
+description = "Format Perl utility scripts"
+run = "perltidy -b -bext=/ scripts/tasks/*.pl"
+
+[tasks."lint:perl"]
+description = "Check Perl syntax, formatting, and Perl::Critic policies"
+run = [
+  'for script in scripts/tasks/*.pl; do perl -c "$script" || exit; done',
+  'for script in scripts/tasks/*.pl; do perltidy --assert-tidy --standard-output "$script" > /dev/null || exit; done',
+  'perlcritic scripts/tasks/*.pl',
+]

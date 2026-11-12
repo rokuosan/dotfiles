@@ -32,6 +32,7 @@ Key reference: OP_SSH_ENCRYPT_KEY_REF, then OP_SSH_SIGN_KEY_REF, then
 op://token/id_ed25519/private key. Supports Ed25519 and RSA SSH keys.
 Requires: op, ssh-keygen, age (brew install age).
 USAGE
+    return;
 }
 
 my $key_ref = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
@@ -69,8 +70,9 @@ for my $dependency ( 'op', 'ssh-keygen', 'age' ) {
 
 umask 0077;
 my $tmpdir = tempdir( 'op-ssh-encrypt-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
-$SIG{INT} = sub { exit 130 };
-$SIG{HUP} = $SIG{TERM} = sub { exit 143 };
+local $SIG{INT}  = sub { exit 130 };
+local $SIG{HUP}  = sub { exit 143 };
+local $SIG{TERM} = sub { exit 143 };
 my $key_file = "$tmpdir/key";
 run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
 chmod 0600, $key_file or die "chmod $key_file: $!\n";
@@ -111,16 +113,17 @@ sub run_command {
         exec { $command[0] } @command;
         die "exec $command[0]: $!\n";
     }
-    waitpid( $pid, 0 );
+    waitpid( $pid, 0 ) == $pid or die "waitpid: $!\n";
     my $status = $?;
     die "$command[0] terminated by signal " . ( $status & 127 ) . "\n" if $status & 127;
     die "$command[0] exited with status " .   ( $status >> 8 ) . "\n"  if $status;
+    return;
 }
 
 sub capture {
     my (@command) = @_;
     open my $pipe, '-|', @command or die "$command[0]: $!\n";
-    local $/;
+    local $/ = undef;
     my $text = <$pipe> // '';
     close $pipe or die "$command[0] failed (status $?)\n";
     $text =~ s/\n+\z//;

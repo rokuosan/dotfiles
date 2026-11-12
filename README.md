@@ -63,7 +63,7 @@ at `~/.config/mise/tasks` and links `config/mise/config.toml` separately.
 When migrating an existing `~/.config/mise` directory symlink, remove only that
 symlink before running `mise dot apply`; keep regular directories and files.
 
-`encrypt`, `sign`, and `verify` are shell aliases for their mise tasks. Reload
+`brewup`, `encrypt`, `sign`, and `verify` are shell aliases for their mise tasks. Reload
 the mise shell environment after applying the configuration to use them.
 Outside an interactive shell, use `mise run --quiet encrypt -- [options] [file]`
 (and similarly for `sign` and `verify`). The separator forwards options such as
@@ -72,6 +72,16 @@ latest Perl through mise; `mise upgrade perl` updates the installed version.
 
 `git-wtclean2` keeps a launcher in `bin/` for use as `git wtclean2`; its Perl
 implementation is also a mise task. `update` is in `scripts/tasks/` as well.
+
+Perl tasks use `.pl` filenames and declare their command aliases in `#MISE`
+comments. Run `mise run format:perl` to format them and `mise run lint:perl` to
+check syntax, formatting, and Perl::Critic policies (severity 4 and 5).
+The repository's Perl installation hook installs Perl::Tidy and Perl::Critic.
+For an already installed Perl, bootstrap these modules with:
+
+```sh
+env -u NO_COLOR mise exec perl -- cpanm --mirror https://cpan.metacpan.org --mirror-only Perl::Tidy Perl::Critic
+```
 
 ## Skills and generated integrations
 

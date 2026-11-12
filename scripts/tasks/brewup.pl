@@ -1,4 +1,9 @@
 #!/usr/bin/env perl
+#MISE alias="brewup"
+#MISE description="Update Homebrew and installed packages"
+#MISE tools={perl="latest"}
+#MISE dir="{{cwd}}"
+#MISE raw=true
 use strict;
 use warnings;
 use utf8;
@@ -58,8 +63,10 @@ die "Homebrew is not installed.\nInstall it with:\n$BREW_INSTALL_COMMAND\n" unle
 } @$PATH;
 
 my $COMMANDS = [
-    [qw(brew update)],     [qw(brew upgrade -y --cask)],
-    [qw(brew upgrade -y)], [qw(brew autoremove)],
+    [qw(brew update)],
+    [qw(brew upgrade -y --cask)],
+    [qw(brew upgrade -y)],
+    [qw(brew autoremove)],
     [qw(brew cleanup)],
 ];
 
@@ -71,7 +78,9 @@ sub run_command {
     my ( $command, $dry_run ) = @_;
     my $command_text = join q{ }, @{$command};
     my $timestamp    = strftime '%Y-%m-%d %H:%M:%S', localtime;
-    if ( -t STDOUT ) {
+
+    # Color depends on stdout being a terminal, regardless of stdin.
+    if ( -t STDOUT ) {    ## no critic (InputOutput::ProhibitInteractiveTest)
         print "\e[36m[$timestamp]\e[0m \e[32m$command_text\e[0m\n";
     }
     else {
@@ -85,4 +94,5 @@ sub run_command {
         if $status & 127;
     my $exit_code = $status >> 8;
     die "$command_text exited with status $exit_code\n" if $exit_code != 0;
+    return;
 }

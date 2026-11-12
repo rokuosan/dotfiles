@@ -26,6 +26,7 @@ Note:
   When invoked as a Git subcommand, use `git wtclean -h`.
   `git wtclean --help` is handled by Git itself and opens the git-wtclean(1) man page.
 USAGE
+    return;
 }
 
 my ( $delete_flag, $prune, $verbose, $help );
@@ -50,6 +51,7 @@ sub set_delete {
         exit 2;
     }
     $delete_flag = $flag;
+    return;
 }
 
 my ( $removed, $found, $failed, $prune_checked ) = ( 0, 0, 0, 0 );
@@ -111,7 +113,7 @@ exit( $failed ? 1 : 0 );
 sub capture {
     my (@command) = @_;
     open my $pipe, '-|', @command or die "$command[0]: $!\n";
-    local $/;
+    local $/ = undef;
     my $text = <$pipe> // '';
     close $pipe or die "$command[0] failed (status $?)\n";
     return $text;
@@ -126,6 +128,6 @@ sub is_repository {
         exec 'git', '-C', $repo, 'rev-parse', '--git-dir';
         die "exec git: $!\n";
     }
-    waitpid( $pid, 0 );
+    waitpid( $pid, 0 ) == $pid or die "waitpid: $!\n";
     return $? == 0;
 }

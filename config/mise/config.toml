@@ -2,6 +2,7 @@
 hello = "echo hello from mise"
 
 [shell_alias]
+brewup = "mise run --quiet brewup --"
 encrypt = "mise run --quiet encrypt --"
 sign = "mise run --quiet sign --"
 verify = "mise run --quiet verify --"

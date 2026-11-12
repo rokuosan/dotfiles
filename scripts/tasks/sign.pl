@@ -27,6 +27,7 @@ stdout unless --output is specified.
 
 When file is specified without --output, ssh-keygen writes file.sig.
 USAGE
+    return;
 }
 
 my $key_ref = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
@@ -61,8 +62,9 @@ for my $dependency ( 'op', 'ssh-keygen' ) {
 
 umask 0077;
 my $tmpdir = tempdir( 'op-ssh-sign-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
-$SIG{INT} = sub { exit 130 };
-$SIG{HUP} = $SIG{TERM} = sub { exit 143 };
+local $SIG{INT}  = sub { exit 130 };
+local $SIG{HUP}  = sub { exit 143 };
+local $SIG{TERM} = sub { exit 143 };
 my $key_file = "$tmpdir/key";
 run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
 chmod 0600, $key_file or die "chmod $key_file: $!\n";
@@ -91,9 +93,10 @@ sub run_command {
         exec { $command[0] } @command;
         die "exec $command[0]: $!\n";
     }
-    waitpid( $pid, 0 );
+    waitpid( $pid, 0 ) == $pid or die "waitpid: $!\n";
     my $status = $?;
     die "$command[0] terminated by signal " . ( $status & 127 ) . "\n" if $status & 127;
     die "$command[0] exited with status " .   ( $status >> 8 ) . "\n"  if $status;
+    return;
 }
 

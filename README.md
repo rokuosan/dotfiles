@@ -6,13 +6,17 @@
 # Install mise
 curl -fsSL https://mise.run | sh
 export PATH="$HOME/.local/bin:$PATH"
+
 # Clone the repository and submodules under the configured ghq root
 GHQ_ROOT="$HOME/repo" mise exec ghq@latest -- ghq get https://github.com/rokuosan/dotfiles
+
 # Change to the dotfiles directory
 cd ~/repo/github.com/rokuosan/dotfiles
+
 # Trust the configuration and preview dotfile deployment
 mise trust
 mise bootstrap --only dotfiles --dry-run
+
 # Apply the dotfiles
 mise bootstrap --only dotfiles
 ```

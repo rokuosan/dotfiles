@@ -1,0 +1,122 @@
+#!/usr/bin/env perl
+#MISE description="Inspect and remove linked worktrees under ghq repositories"
+#MISE tools={perl="latest"}
+#MISE dir="{{cwd}}"
+#MISE raw=true
+use v5.40;
+use Getopt::Long qw(GetOptions);
+
+sub usage {
+    print <<'USAGE';
+Usage:
+  git wtclean           Show linked worktrees under ghq repositories that would be removed
+  git wtclean -d        Remove them with `git worktree remove`
+  git wtclean -D        Force remove them with `git worktree remove --force`
+  git wtclean --prune   Prune stale worktree metadata with `git worktree prune`
+
+Options:
+  -d                    Remove worktrees with `git worktree remove`
+  -D                    Force remove worktrees with `git worktree remove --force`
+  --prune               Run `git worktree prune` for each ghq repository
+  -v, --verbose         Print each repository while pruning
+  -h                    Show this help
+
+Note:
+  When invoked as a Git subcommand, use `git wtclean -h`.
+  `git wtclean --help` is handled by Git itself and opens the git-wtclean(1) man page.
+USAGE
+}
+
+my ($delete_flag, $prune, $verbose, $help);
+Getopt::Long::Configure('no_auto_abbrev', 'no_ignore_case');
+GetOptions(
+    'd' => sub { set_delete('-d') },
+    'D' => sub { set_delete('-D') },
+    'prune' => \$prune,
+    'verbose|v' => \$verbose,
+    'help|h' => \$help,
+) or exit 2;
+if ($help) { usage(); exit 0; }
+if (@ARGV) { warn "git wtclean: unexpected arguments: @ARGV\n"; exit 2; }
+
+sub set_delete {
+    my ($flag) = @_;
+    if (defined $delete_flag) {
+        warn "git wtclean: specify only one delete option: -d or -D\n";
+        exit 2;
+    }
+    $delete_flag = $flag;
+}
+
+my ($removed, $found, $failed, $prune_checked) = (0, 0, 0, 0);
+my $repositories = capture('ghq', 'list', '-p');
+for my $repo (split /\n/, $repositories) {
+    next unless length $repo;
+    next unless is_repository($repo);
+    my $worktrees = eval { capture('git', '-C', $repo, 'worktree', 'list', '--porcelain', '-z') };
+    if ($@) {
+        warn "git wtclean: failed to list worktrees for $repo: $@";
+        $failed++;
+        next;
+    }
+    my @records = split /\0\0/, $worktrees;
+    shift @records; # The first record is the main worktree.
+    for my $record (@records) {
+        my @fields = split /\0/, $record;
+        next if grep { $_ eq 'bare' } @fields;
+        my ($path) = map { /^worktree (.*)\z/s ? $1 : () } @fields;
+        next unless defined $path && length $path;
+        $found++;
+        unless (defined $delete_flag) {
+            say "Would remove: $path";
+            next;
+        }
+        say "Removing ($delete_flag): $path";
+        my @args = $delete_flag eq '-D' ? ('--force', $path) : ($path);
+        if (system('git', '-C', $repo, 'worktree', 'remove', @args) == 0) {
+            $removed++;
+        } else {
+            $failed++;
+            warn "git wtclean: failed to remove: $path\n";
+        }
+    }
+    if ($prune) {
+        say "Pruning: $repo" if $verbose;
+        if (system('git', '-C', $repo, 'worktree', 'prune') == 0) {
+            $prune_checked++;
+        } else {
+            $failed++;
+            warn "git wtclean: failed to prune: $repo\n";
+        }
+    }
+}
+if (defined $delete_flag) {
+    say "Done. found=$found removed=$removed prune_checked=$prune_checked failed=$failed";
+} elsif ($prune) {
+    say "Done. found=$found prune_checked=$prune_checked failed=$failed";
+} else {
+    say "Dry run. found=$found. Run 'git wtclean -d' to remove, or 'git wtclean -D' to force remove.";
+}
+exit($failed ? 1 : 0);
+
+sub capture {
+    my (@command) = @_;
+    open my $pipe, '-|', @command or die "$command[0]: $!\n";
+    local $/;
+    my $text = <$pipe> // '';
+    close $pipe or die "$command[0] failed (status $?)\n";
+    return $text;
+}
+
+sub is_repository {
+    my ($repo) = @_;
+    my $pid = fork // die "fork: $!\n";
+    if (!$pid) {
+        open STDOUT, '>', '/dev/null' or die "/dev/null: $!\n";
+        open STDERR, '>', '/dev/null' or die "/dev/null: $!\n";
+        exec 'git', '-C', $repo, 'rev-parse', '--git-dir';
+        die "exec git: $!\n";
+    }
+    waitpid($pid, 0);
+    return $? == 0;
+}

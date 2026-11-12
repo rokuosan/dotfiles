@@ -1,6 +1,6 @@
 return {
   "keaising/im-select.nvim",
-  cond = function() return vim.fn.executable "im-select" == 1 end,
+  cond = vim.fn.executable "im-select" == 1,
   opts = {
     default_command = "im-select",
     default_im_select = "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman",

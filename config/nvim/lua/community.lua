@@ -2,6 +2,7 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.pack.lua" },
+  { import = "astrocommunity.pack.json" },
   { import = "astrocommunity.editing-support.conform-nvim" },
   { import = "astrocommunity.pack.biome" },
   { import = "astrocommunity.pack.eslint" },

@@ -73,6 +73,10 @@ latest Perl through mise; `mise upgrade perl` updates the installed version.
 `git-wtclean2` keeps a launcher in `bin/` for use as `git wtclean2`; its Perl
 implementation is also a mise task. `update` is in `scripts/tasks/` as well.
 
+Shared process helpers live in `scripts/tasks/lib/Dotfiles/Process.pm`. Modules
+have no execute permission, so mise does not list them as tasks. Scripts resolve
+this library relative to their real location, including through symlinks.
+
 Perl tasks use `.pl` filenames and declare their command aliases in `#MISE`
 comments. Run `mise run format:perl` to format them and `mise run lint:perl` to
 check syntax, formatting, and Perl::Critic policies (severity 4 and 5).

@@ -7,6 +7,10 @@
 use v5.40;
 use Getopt::Long qw(GetOptionsFromArray);
 
+use FindBin qw($RealBin);
+use lib "$RealBin/lib";
+use Dotfiles::Process qw(capture);
+
 exit main(@ARGV);
 
 sub main {
@@ -115,15 +119,6 @@ sub set_delete {
     }
     ${$delete_flag} = $flag;
     return;
-}
-
-sub capture {
-    my (@command) = @_;
-    open my $pipe, '-|', @command or die "$command[0]: $!\n";
-    local $/ = undef;
-    my $text = <$pipe> // '';
-    close $pipe or die "$command[0] failed (status $?)\n";
-    return $text;
 }
 
 sub is_repository {

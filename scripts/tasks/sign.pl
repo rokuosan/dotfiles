@@ -8,6 +8,10 @@ use v5.40;
 use Getopt::Long qw(GetOptionsFromArray);
 use File::Temp   qw(tempdir);
 
+use FindBin qw($RealBin);
+use lib "$RealBin/lib";
+use Dotfiles::Process qw(run_command require_commands);
+
 exit main(@ARGV);
 
 sub main {
@@ -36,12 +40,7 @@ sub main {
     die "namespace must not be empty\n"           unless length $namespace;
     die "--hashalg must be sha256 or sha512\n"    unless $hashalg =~ /\A(?:sha256|sha512)\z/;
 
-    for my $dependency ( 'op', 'ssh-keygen' ) {
-        die "sign: $dependency is not installed or not in PATH\n" unless grep {
-            my $path = "$_/$dependency";
-            -f $path && -x $path;
-        } split /:/, ( $ENV{PATH} // '' );
-    }
+    require_commands(qw(op ssh-keygen));
 
     umask 0077;
     my $tmpdir = tempdir( 'op-ssh-sign-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
@@ -86,24 +85,3 @@ When file is specified without --output, ssh-keygen writes file.sig.
 USAGE
     return;
 }
-
-sub run_command {
-    my ( $input, $output, @command ) = @_;
-    my $pid = fork // die "fork: $!\n";
-    if ( !$pid ) {
-        if ( defined $input ) {
-            open STDIN, '<', $input or die "$input: $!\n";
-        }
-        if ( defined $output ) {
-            open STDOUT, '>', $output or die "$output: $!\n";
-        }
-        exec { $command[0] } @command;
-        die "exec $command[0]: $!\n";
-    }
-    waitpid( $pid, 0 ) == $pid or die "waitpid: $!\n";
-    my $status = $?;
-    die "$command[0] terminated by signal " . ( $status & 127 ) . "\n" if $status & 127;
-    die "$command[0] exited with status " .   ( $status >> 8 ) . "\n"  if $status;
-    return;
-}
-

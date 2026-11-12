@@ -8,6 +8,10 @@ use v5.40;
 use Getopt::Long qw(GetOptionsFromArray);
 use File::Temp   qw(tempdir);
 
+use FindBin qw($RealBin);
+use lib "$RealBin/lib";
+use Dotfiles::Process qw(run_command capture require_commands);
+
 exit main(@ARGV);
 
 sub main {
@@ -40,12 +44,7 @@ sub main {
     die "verify: signature file is not readable: $signature\n" unless -r $signature;
     die "verify: identity must not be empty\n"                 unless length $identity;
 
-    for my $dependency ( 'op', 'ssh-keygen' ) {
-        die "verify: $dependency is not installed or not in PATH\n" unless grep {
-            my $path = "$_/$dependency";
-            -f $path && -x $path;
-        } split /:/, ( $ENV{PATH} // '' );
-    }
+    require_commands(qw(op ssh-keygen));
 
     umask 0077;
     my $tmpdir = tempdir( 'op-ssh-verify-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
@@ -56,7 +55,8 @@ sub main {
     run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
     chmod 0600, $key_file or die "chmod $key_file: $!\n";
 
-    my $public_key      = capture( 'ssh-keygen', '-y', '-f', $key_file );
+    my $public_key = capture( 'ssh-keygen', '-y', '-f', $key_file );
+    chomp $public_key;
     my $allowed_signers = "$tmpdir/allowed_signers";
     open my $allowed, '>', $allowed_signers or die "$allowed_signers: $!\n";
     print {$allowed} "$identity $public_key\n";
@@ -86,34 +86,4 @@ Options:
 If file is omitted, data is read from stdin.
 USAGE
     return;
-}
-
-sub run_command {
-    my ( $input, $output, @command ) = @_;
-    my $pid = fork // die "fork: $!\n";
-    if ( !$pid ) {
-        if ( defined $input ) {
-            open STDIN, '<', $input or die "$input: $!\n";
-        }
-        if ( defined $output ) {
-            open STDOUT, '>', $output or die "$output: $!\n";
-        }
-        exec { $command[0] } @command;
-        die "exec $command[0]: $!\n";
-    }
-    waitpid( $pid, 0 ) == $pid or die "waitpid: $!\n";
-    my $status = $?;
-    die "$command[0] terminated by signal " . ( $status & 127 ) . "\n" if $status & 127;
-    die "$command[0] exited with status " .   ( $status >> 8 ) . "\n"  if $status;
-    return;
-}
-
-sub capture {
-    my (@command) = @_;
-    open my $pipe, '-|', @command or die "$command[0]: $!\n";
-    local $/ = undef;
-    my $text = <$pipe> // '';
-    close $pipe or die "$command[0] failed (status $?)\n";
-    $text =~ s/\n+\z//;
-    return $text;
 }

@@ -10,6 +10,10 @@ use File::Temp   qw(tempdir);
 use Fcntl        qw(O_WRONLY O_CREAT O_EXCL);
 use File::Copy   qw(copy);
 
+use FindBin qw($RealBin);
+use lib "$RealBin/lib";
+use Dotfiles::Process qw(run_command capture require_commands);
+
 exit main(@ARGV);
 
 sub main {
@@ -42,12 +46,7 @@ sub main {
     die "encrypt: output already exists: $output\n"
         if $output ne '-' && ( -e $output || -l $output );
 
-    for my $dependency ( 'op', 'ssh-keygen', 'age' ) {
-        die "encrypt: $dependency is not installed or not in PATH\n" unless grep {
-            my $path = "$_/$dependency";
-            -f $path && -x $path;
-        } split /:/, ( $ENV{PATH} // '' );
-    }
+    require_commands(qw(op ssh-keygen age));
 
     umask 0077;
     my $tmpdir = tempdir( 'op-ssh-encrypt-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
@@ -64,6 +63,7 @@ sub main {
     }
     else {
         my $recipient = capture( 'ssh-keygen', '-y', '-P', '', '-f', $key_file );
+        chomp $recipient;
         die "encrypt: only Ed25519 and RSA SSH keys are supported\n"
             unless $recipient =~ /\Assh-(?:ed25519|rsa) /;
         @age_args = ( '--encrypt', '--recipient', $recipient );
@@ -106,34 +106,4 @@ op://token/id_ed25519/private key. Supports Ed25519 and RSA SSH keys.
 Requires: op, ssh-keygen, age (brew install age).
 USAGE
     return;
-}
-
-sub run_command {
-    my ( $input, $output, @command ) = @_;
-    my $pid = fork // die "fork: $!\n";
-    if ( !$pid ) {
-        if ( defined $input ) {
-            open STDIN, '<', $input or die "$input: $!\n";
-        }
-        if ( defined $output ) {
-            open STDOUT, '>', $output or die "$output: $!\n";
-        }
-        exec { $command[0] } @command;
-        die "exec $command[0]: $!\n";
-    }
-    waitpid( $pid, 0 ) == $pid or die "waitpid: $!\n";
-    my $status = $?;
-    die "$command[0] terminated by signal " . ( $status & 127 ) . "\n" if $status & 127;
-    die "$command[0] exited with status " .   ( $status >> 8 ) . "\n"  if $status;
-    return;
-}
-
-sub capture {
-    my (@command) = @_;
-    open my $pipe, '-|', @command or die "$command[0]: $!\n";
-    local $/ = undef;
-    my $text = <$pipe> // '';
-    close $pipe or die "$command[0] failed (status $?)\n";
-    $text =~ s/\n+\z//;
-    return $text;
 }

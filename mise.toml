@@ -52,12 +52,12 @@ run = "herdr integration install claude"
 
 [tasks."format:perl"]
 description = "Format Perl utility scripts"
-run = "perltidy -b -bext=/ scripts/tasks/*.pl"
+run = "perltidy -b -bext=/ scripts/tasks/*.pl scripts/tasks/lib/Dotfiles/*.pm"
 
 [tasks."lint:perl"]
 description = "Check Perl syntax, formatting, and Perl::Critic policies"
 run = [
-  'for script in scripts/tasks/*.pl; do perl -c "$script" || exit; done',
-  'for script in scripts/tasks/*.pl; do perltidy --assert-tidy --standard-output "$script" > /dev/null || exit; done',
-  'perlcritic scripts/tasks/*.pl',
+  'for script in scripts/tasks/*.pl scripts/tasks/lib/Dotfiles/*.pm; do perl -c "$script" || exit; done',
+  'for script in scripts/tasks/*.pl scripts/tasks/lib/Dotfiles/*.pm; do perltidy --assert-tidy --standard-output "$script" > /dev/null || exit; done',
+  'perlcritic scripts/tasks/*.pl scripts/tasks/lib/Dotfiles/*.pm',
 ]

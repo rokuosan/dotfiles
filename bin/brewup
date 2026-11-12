@@ -4,11 +4,8 @@ use warnings;
 use utf8;
 use POSIX qw(strftime);
 
-use FindBin;
-use lib "$FindBin::RealBin/../lib";
-
-use CLI::Arguments;
-use CLI::Runner;
+use Getopt::Long qw(GetOptions);
+use Pod::Usage qw(pod2usage);
 
 =head1 NAME
 
@@ -16,8 +13,21 @@ brewup - Update Homebrew and all installed packages
 
 =head1 SYNOPSIS
 
-    $ brewup --dry-run (or -n to only print commands without executing)
-    $ brewup
+    brewup [--dry-run|-n] [--help|-h]
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--dry-run>, B<-n>
+
+Only print commands without executing.
+
+=item B<--help>, B<-h>
+
+Show this help message.
+
+=back
 
 =head1 DESCRIPTION
 
@@ -29,6 +39,15 @@ This script updates Homebrew and all installed packages. It checks if Homebrew i
 Each command is executed with error handling, and the script prints timestamps and command information in color if the output is a terminal.
 
 =cut
+
+my ($dry_run, $help);
+Getopt::Long::Configure('no_auto_abbrev', 'no_ignore_case');
+GetOptions(
+    'dry-run|n' => \$dry_run,
+    'help|h' => \$help,
+) or pod2usage(2);
+pod2usage(-message => "Unexpected arguments: @ARGV", -exitval => 2) if @ARGV;
+pod2usage(-exitval => 0, -verbose => 1) if $help;
 
 my $PATH = [ split(/:/, ($ENV{PATH} // q{})) ];
 my $BREW_INSTALL_COMMAND = '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
@@ -45,39 +64,25 @@ my $COMMANDS = [
     [qw(brew cleanup)],
 ];
 
-my $runner = CLI::Runner->new;
-my $arg_parser = CLI::Arguments->new(
-    {
-        name => 'dry-run',
-        alias => 'n',
-        description => 'Only print commands without executing',
-    },
-    {
-        name => 'help',
-        alias => 'h',
-        description => 'Show this help message',
-    }
-);
-
-my $args;
-eval {
-    $args = $arg_parser->parse(@ARGV);
-};
-if ($@) {
-    die "Error parsing arguments: $@\nUse --help to see available options.\n";
-}
-if ($args->{'help'}) {
-    print "Usage: brewup [options]\n\nOptions:\n";
-    for my $arg (@{$arg_parser->{_args}}) {
-        printf "  --%-10s -%s  %s\n", $arg->{name}, $arg->{alias} // '', $arg->{description};
-    }
-    exit 0;
-}
-
-
 for my $command (@{$COMMANDS}) {
-    $runner->run($command, {
-        print_command => 1,
-        dry_run => $args->{ 'dry-run' },
-    });
+    run_command($command, $dry_run);
+}
+
+sub run_command {
+    my ($command, $dry_run) = @_;
+    my $command_text = join q{ }, @{$command};
+    my $timestamp = strftime '%Y-%m-%d %H:%M:%S', localtime;
+    if (-t STDOUT) {
+        print "\e[36m[$timestamp]\e[0m \e[32m$command_text\e[0m\n";
+    } else {
+        print "[$timestamp] $command_text\n";
+    }
+    return if $dry_run;
+
+    my $status = system @{$command};
+    die "failed to execute $command_text: $!\n" if $status == -1;
+    die sprintf "%s terminated by signal %d\n", $command_text, ($status & 127)
+        if $status & 127;
+    my $exit_code = $status >> 8;
+    die "$command_text exited with status $exit_code\n" if $exit_code != 0;
 }

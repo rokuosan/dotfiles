@@ -29,6 +29,11 @@ lua = "latest"
 "~/.config/starship" = { source = "config/starship" }
 "~/.config/wezterm" = { source = "config/wezterm" }
 
+[tasks."setup:brew"]
+description = "Install Homebrew and packages from Brewfile"
+dir = "{{ config_root }}"
+run = "bash homebrew/install.sh"
+
 [tasks."setup:skills"]
 description = "Install or refresh external skills for Codex and Claude Code"
 run = [

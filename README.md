@@ -39,6 +39,19 @@ To apply only the dotfiles from outside this repository:
 mise -C ~/repo/github.com/rokuosan/dotfiles dot apply
 ```
 
+## Homebrew packages and applications
+
+Install Homebrew if needed, then install formulae and casks from `Brewfile`:
+
+```sh
+mise run setup:brew
+```
+
+Existing Homebrew installations are reused, including when `brew` is not on
+`PATH` but is in a standard installation location. Installed packages are not
+upgraded, and packages outside `Brewfile` are not removed. Use `brew upgrade`
+separately when you want to update them.
+
 ## Skills and generated integrations
 
 Repository skills are linked individually into `~/.agents/skills` and

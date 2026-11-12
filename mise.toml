@@ -2,15 +2,18 @@
 lua = "latest"
 
 [dotfiles]
+"~/bin" = { source = "bin" }
+
 "~/.zshrc" = { source = "config/zsh/.zshrc" }
 "~/.zprofile" = { source = "config/zsh/.zprofile" }
-"~/bin" = { source = "bin" }
 "~/.config/zsh" = { source = "config/zsh" }
-"~/.config/1Password" = { source = "config/1Password" }
+
 "~/.agents/skills" = { source = "agents/skills" }
 "~/.claude/skills" = { source = "agents/skills" }
 "~/.claude/settings.json" = { source = "config/claude/settings.json" }
 "~/.codex/config.toml" = { source = "config/codex/config.toml" }
+
+"~/.config/1Password" = { source = "config/1Password" }
 "~/.config/gh" = { source = "config/gh" }
 "~/.config/ghostty" = { source = "config/ghostty" }
 "~/.config/git" = { source = "config/git" }

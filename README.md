@@ -25,11 +25,32 @@ directories conflict; inspect and remove or move only those targets yourself,
 then rerun. Links to other sources, including broken links, are repointed.
 No automatic backup is configured.
 
-All entries currently use symlinks to preserve the former `install.sh` layout,
-including Codex. Copying or seeding individual configurations is a separate change.
+Codex settings still use a symlink. Claude settings are seeded only when
+missing, so application-generated settings can remain local.
 
 To apply only the dotfiles from outside this repository:
 
 ```sh
 mise -C ~/.dotfiles dot apply
+```
+
+## Skills and generated integrations
+
+Repository skills are linked individually into `~/.agents/skills` and
+`~/.claude/skills`, leaving externally installed skills in place. Gist skills
+are submodules; after cloning without `--recurse-submodules`, run
+`git submodule update --init --recursive` before applying dotfiles.
+
+Install or refresh Cloudflare and cosense skills for Codex and Claude Code:
+
+```sh
+mise run skills:install
+```
+
+Claude settings are copied only when missing. Existing settings, including
+Herdr-generated hooks, stay local. After installing Herdr, generate its
+integration rather than copying the generated hook script:
+
+```sh
+mise run herdr:claude
 ```

@@ -8,9 +8,13 @@ lua = "latest"
 "~/.zprofile" = { source = "config/zsh/.zprofile" }
 "~/.config/zsh" = { source = "config/zsh" }
 
-"~/.agents/skills" = { source = "agents/skills" }
-"~/.claude/skills" = { source = "agents/skills" }
-"~/.claude/settings.json" = { source = "config/claude/settings.json" }
+"~/.agents/skills/apple-container" = { source = "agents/skills/apple-container" }
+"~/.agents/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
+"~/.agents/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
+"~/.claude/skills/apple-container" = { source = "agents/skills/apple-container" }
+"~/.claude/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
+"~/.claude/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
+"~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "copy", create_if_missing = true }
 "~/.codex/config.toml" = { source = "config/codex/config.toml" }
 
 "~/.config/1Password" = { source = "config/1Password" }
@@ -24,3 +28,14 @@ lua = "latest"
 "~/.config/pnpm" = { source = "config/pnpm" }
 "~/.config/starship" = { source = "config/starship" }
 "~/.config/wezterm" = { source = "config/wezterm" }
+
+[tasks."skills:install"]
+description = "Install or refresh external skills for Codex and Claude Code"
+run = [
+  "npx --yes skills add cloudflare/skills --global --agent codex claude-code --skill '*' --copy --yes",
+  "npx --yes skills add helpfeel/cosense-cli --global --agent codex claude-code --skill cosense --copy --yes",
+]
+
+[tasks."herdr:claude"]
+description = "Generate the Claude Code integration using Herdr"
+run = "herdr integration install claude"

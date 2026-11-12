@@ -25,20 +25,6 @@
     "pr": ""
   },
   "model": "opus",
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/rokuosan/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
   "extraKnownMarketplaces": {
     "cosense-cli": {
       "source": {

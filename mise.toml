@@ -15,7 +15,7 @@ lua = "latest"
 "~/.claude/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
 "~/.claude/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
 "~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "copy", create_if_missing = true }
-"~/.codex/config.toml" = { source = "config/codex/config.toml" }
+"~/.codex/config.toml/shared" = { source = "config/codex/config.toml", merge = true }
 
 "~/.config/1Password" = { source = "config/1Password" }
 "~/.config/gh" = { source = "config/gh" }

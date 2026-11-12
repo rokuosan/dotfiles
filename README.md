@@ -28,8 +28,10 @@ directories conflict; inspect and remove or move only those targets yourself,
 then rerun. Links to other sources, including broken links, are repointed.
 No automatic backup is configured.
 
-Codex settings still use a symlink. Claude settings are seeded only when
-missing, so application-generated settings can remain local.
+Codex settings use a regular file. `mise dot apply` merges the keys declared in
+`config/codex/config.toml`, preserving local project trust, hooks, and application
+state. Removing a shared key does not remove its local value. Claude settings
+are seeded only when missing, so application-generated settings can remain local.
 
 To apply only the dotfiles from outside this repository:
 

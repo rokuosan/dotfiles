@@ -1,11 +1,12 @@
 #!/usr/bin/env perl
+#MISE alias="verify"
 #MISE description="Verify data against an SSH signature using the OpenSSH key stored in 1Password."
 #MISE tools={perl="latest"}
 #MISE dir="{{cwd}}"
 #MISE raw=true
 use v5.40;
 use Getopt::Long qw(GetOptions);
-use File::Temp qw(tempdir);
+use File::Temp   qw(tempdir);
 
 sub usage {
     print <<'USAGE';
@@ -26,62 +27,75 @@ USAGE
 }
 
 my $key_ref = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
-my ($input, $output, $help);
+my ( $input, $output, $help );
 my $namespace = $ENV{OP_SSH_SIGN_NAMESPACE} || 'file';
-my $identity = $ENV{OP_SSH_SIGN_IDENTITY} || 'signer';
+my $identity  = $ENV{OP_SSH_SIGN_IDENTITY}  || 'signer';
 my $signature;
-Getopt::Long::Configure('no_auto_abbrev', 'no_ignore_case', 'require_order');
+Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case', 'require_order' );
 GetOptions(
-    'ref|r=s' => \$key_ref, 'namespace|n=s' => \$namespace,
-    'identity|I=s' => \$identity, 'signature|s=s' => \$signature,
-    'help|h' => \$help,
+    'ref|r=s'       => \$key_ref,
+    'namespace|n=s' => \$namespace,
+    'identity|I=s'  => \$identity,
+    'signature|s=s' => \$signature,
+    'help|h'        => \$help,
 ) or exit 2;
-if ($help) { usage(); exit 0; }
+
+if ($help) {
+    usage();
+    exit 0;
+}
 die "verify: only one input file is supported\n" if @ARGV > 1;
 $input = shift @ARGV;
 die "verify: input file is not readable: $input\n" if defined $input && !-r $input;
 die "verify: key reference must not be empty\n" unless length $key_ref;
-die "namespace must not be empty\n" unless length $namespace;
-die "verify: set --signature\n" unless defined $signature && length $signature;
+die "namespace must not be empty\n"             unless length $namespace;
+die "verify: set --signature\n"                 unless defined $signature && length $signature;
 die "verify: signature file is not readable: $signature\n" unless -r $signature;
-die "verify: identity must not be empty\n" unless length $identity;
+die "verify: identity must not be empty\n"                 unless length $identity;
 
-for my $dependency ('op', 'ssh-keygen') {
+for my $dependency ( 'op', 'ssh-keygen' ) {
     die "verify: $dependency is not installed or not in PATH\n" unless grep {
         my $path = "$_/$dependency";
         -f $path && -x $path;
-    } split /:/, ($ENV{PATH} // '');
+    } split /:/, ( $ENV{PATH} // '' );
 }
 
 umask 0077;
-my $tmpdir = tempdir('op-ssh-verify-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1);
+my $tmpdir = tempdir( 'op-ssh-verify-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
 $SIG{INT} = sub { exit 130 };
 $SIG{HUP} = $SIG{TERM} = sub { exit 143 };
 my $key_file = "$tmpdir/key";
-run_command(undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref);
+run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
 chmod 0600, $key_file or die "chmod $key_file: $!\n";
 
-my $public_key = capture('ssh-keygen', '-y', '-f', $key_file);
+my $public_key      = capture( 'ssh-keygen', '-y', '-f', $key_file );
 my $allowed_signers = "$tmpdir/allowed_signers";
 open my $allowed, '>', $allowed_signers or die "$allowed_signers: $!\n";
 print {$allowed} "$identity $public_key\n";
 close $allowed or die "$allowed_signers: $!\n";
-run_command($input, undef, 'ssh-keygen', '-Y', 'verify', '-f', $allowed_signers,
-    '-I', $identity, '-n', $namespace, '-s', $signature);
+run_command(
+    $input,           undef, 'ssh-keygen', '-Y', 'verify',   '-f',
+    $allowed_signers, '-I',  $identity,    '-n', $namespace, '-s',
+    $signature
+);
 
 sub run_command {
-    my ($input, $output, @command) = @_;
+    my ( $input, $output, @command ) = @_;
     my $pid = fork // die "fork: $!\n";
-    if (!$pid) {
-        if (defined $input) { open STDIN, '<', $input or die "$input: $!\n"; }
-        if (defined $output) { open STDOUT, '>', $output or die "$output: $!\n"; }
-        exec {$command[0]} @command;
+    if ( !$pid ) {
+        if ( defined $input ) {
+            open STDIN, '<', $input or die "$input: $!\n";
+        }
+        if ( defined $output ) {
+            open STDOUT, '>', $output or die "$output: $!\n";
+        }
+        exec { $command[0] } @command;
         die "exec $command[0]: $!\n";
     }
-    waitpid($pid, 0);
+    waitpid( $pid, 0 );
     my $status = $?;
-    die "$command[0] terminated by signal " . ($status & 127) . "\n" if $status & 127;
-    die "$command[0] exited with status " . ($status >> 8) . "\n" if $status;
+    die "$command[0] terminated by signal " . ( $status & 127 ) . "\n" if $status & 127;
+    die "$command[0] exited with status " .   ( $status >> 8 ) . "\n"  if $status;
 }
 
 sub capture {

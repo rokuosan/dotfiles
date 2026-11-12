@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+#MISE alias="git-wtclean2"
 #MISE description="Inspect and remove linked worktrees under ghq repositories"
 #MISE tools={perl="latest"}
 #MISE dir="{{cwd}}"
@@ -27,77 +28,85 @@ Note:
 USAGE
 }
 
-my ($delete_flag, $prune, $verbose, $help);
-Getopt::Long::Configure('no_auto_abbrev', 'no_ignore_case');
+my ( $delete_flag, $prune, $verbose, $help );
+Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case' );
 GetOptions(
-    'd' => sub { set_delete('-d') },
-    'D' => sub { set_delete('-D') },
-    'prune' => \$prune,
+    'd'         => sub { set_delete('-d') },
+    'D'         => sub { set_delete('-D') },
+    'prune'     => \$prune,
     'verbose|v' => \$verbose,
-    'help|h' => \$help,
+    'help|h'    => \$help,
 ) or exit 2;
 if ($help) { usage(); exit 0; }
-if (@ARGV) { warn "git wtclean: unexpected arguments: @ARGV\n"; exit 2; }
+if (@ARGV) {
+    warn "git wtclean: unexpected arguments: @ARGV\n";
+    exit 2;
+}
 
 sub set_delete {
     my ($flag) = @_;
-    if (defined $delete_flag) {
+    if ( defined $delete_flag ) {
         warn "git wtclean: specify only one delete option: -d or -D\n";
         exit 2;
     }
     $delete_flag = $flag;
 }
 
-my ($removed, $found, $failed, $prune_checked) = (0, 0, 0, 0);
-my $repositories = capture('ghq', 'list', '-p');
-for my $repo (split /\n/, $repositories) {
+my ( $removed, $found, $failed, $prune_checked ) = ( 0, 0, 0, 0 );
+my $repositories = capture( 'ghq', 'list', '-p' );
+for my $repo ( split /\n/, $repositories ) {
     next unless length $repo;
     next unless is_repository($repo);
-    my $worktrees = eval { capture('git', '-C', $repo, 'worktree', 'list', '--porcelain', '-z') };
+    my $worktrees = eval { capture( 'git', '-C', $repo, 'worktree', 'list', '--porcelain', '-z' ) };
     if ($@) {
         warn "git wtclean: failed to list worktrees for $repo: $@";
         $failed++;
         next;
     }
     my @records = split /\0\0/, $worktrees;
-    shift @records; # The first record is the main worktree.
+    shift @records;    # The first record is the main worktree.
     for my $record (@records) {
         my @fields = split /\0/, $record;
         next if grep { $_ eq 'bare' } @fields;
         my ($path) = map { /^worktree (.*)\z/s ? $1 : () } @fields;
         next unless defined $path && length $path;
         $found++;
-        unless (defined $delete_flag) {
+        unless ( defined $delete_flag ) {
             say "Would remove: $path";
             next;
         }
         say "Removing ($delete_flag): $path";
-        my @args = $delete_flag eq '-D' ? ('--force', $path) : ($path);
-        if (system('git', '-C', $repo, 'worktree', 'remove', @args) == 0) {
+        my @args = $delete_flag eq '-D' ? ( '--force', $path ) : ($path);
+        if ( system( 'git', '-C', $repo, 'worktree', 'remove', @args ) == 0 ) {
             $removed++;
-        } else {
+        }
+        else {
             $failed++;
             warn "git wtclean: failed to remove: $path\n";
         }
     }
     if ($prune) {
         say "Pruning: $repo" if $verbose;
-        if (system('git', '-C', $repo, 'worktree', 'prune') == 0) {
+        if ( system( 'git', '-C', $repo, 'worktree', 'prune' ) == 0 ) {
             $prune_checked++;
-        } else {
+        }
+        else {
             $failed++;
             warn "git wtclean: failed to prune: $repo\n";
         }
     }
 }
-if (defined $delete_flag) {
+if ( defined $delete_flag ) {
     say "Done. found=$found removed=$removed prune_checked=$prune_checked failed=$failed";
-} elsif ($prune) {
-    say "Done. found=$found prune_checked=$prune_checked failed=$failed";
-} else {
-    say "Dry run. found=$found. Run 'git wtclean -d' to remove, or 'git wtclean -D' to force remove.";
 }
-exit($failed ? 1 : 0);
+elsif ($prune) {
+    say "Done. found=$found prune_checked=$prune_checked failed=$failed";
+}
+else {
+    say
+"Dry run. found=$found. Run 'git wtclean -d' to remove, or 'git wtclean -D' to force remove.";
+}
+exit( $failed ? 1 : 0 );
 
 sub capture {
     my (@command) = @_;
@@ -111,12 +120,12 @@ sub capture {
 sub is_repository {
     my ($repo) = @_;
     my $pid = fork // die "fork: $!\n";
-    if (!$pid) {
+    if ( !$pid ) {
         open STDOUT, '>', '/dev/null' or die "/dev/null: $!\n";
         open STDERR, '>', '/dev/null' or die "/dev/null: $!\n";
         exec 'git', '-C', $repo, 'rev-parse', '--git-dir';
         die "exec git: $!\n";
     }
-    waitpid($pid, 0);
+    waitpid( $pid, 0 );
     return $? == 0;
 }

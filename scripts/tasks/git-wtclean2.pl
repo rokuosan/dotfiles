@@ -5,7 +5,85 @@
 #MISE dir="{{cwd}}"
 #MISE raw=true
 use v5.40;
-use Getopt::Long qw(GetOptions);
+use Getopt::Long qw(GetOptionsFromArray);
+
+exit main(@ARGV);
+
+sub main {
+    my @arguments = @_;
+    my ( $delete_flag, $prune, $verbose, $help );
+    Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case' );
+    GetOptionsFromArray(
+        \@arguments,
+        'd'         => sub { set_delete( \$delete_flag, '-d' ) },
+        'D'         => sub { set_delete( \$delete_flag, '-D' ) },
+        'prune'     => \$prune,
+        'verbose|v' => \$verbose,
+        'help|h'    => \$help,
+    ) or return 2;
+    if ($help) { usage(); return 0; }
+    if (@arguments) {
+        warn "git wtclean: unexpected arguments: @arguments\n";
+        return 2;
+    }
+
+    my ( $removed, $found, $failed, $prune_checked ) = ( 0, 0, 0, 0 );
+    my $repositories = capture( 'ghq', 'list', '-p' );
+    for my $repo ( split /\n/, $repositories ) {
+        next unless length $repo;
+        next unless is_repository($repo);
+        my $worktrees =
+            eval { capture( 'git', '-C', $repo, 'worktree', 'list', '--porcelain', '-z' ) };
+        if ($@) {
+            warn "git wtclean: failed to list worktrees for $repo: $@";
+            $failed++;
+            next;
+        }
+        my @records = split /\0\0/, $worktrees;
+        shift @records;    # The first record is the main worktree.
+        for my $record (@records) {
+            my @fields = split /\0/, $record;
+            next if grep { $_ eq 'bare' } @fields;
+            my ($path) = map { /^worktree (.*)\z/s ? $1 : () } @fields;
+            next unless defined $path && length $path;
+            $found++;
+            unless ( defined $delete_flag ) {
+                say "Would remove: $path";
+                next;
+            }
+            say "Removing ($delete_flag): $path";
+            my @args = $delete_flag eq '-D' ? ( '--force', $path ) : ($path);
+            if ( system( 'git', '-C', $repo, 'worktree', 'remove', @args ) == 0 ) {
+                $removed++;
+            }
+            else {
+                $failed++;
+                warn "git wtclean: failed to remove: $path\n";
+            }
+        }
+        if ($prune) {
+            say "Pruning: $repo" if $verbose;
+            if ( system( 'git', '-C', $repo, 'worktree', 'prune' ) == 0 ) {
+                $prune_checked++;
+            }
+            else {
+                $failed++;
+                warn "git wtclean: failed to prune: $repo\n";
+            }
+        }
+    }
+    if ( defined $delete_flag ) {
+        say "Done. found=$found removed=$removed prune_checked=$prune_checked failed=$failed";
+    }
+    elsif ($prune) {
+        say "Done. found=$found prune_checked=$prune_checked failed=$failed";
+    }
+    else {
+        say
+"Dry run. found=$found. Run 'git wtclean -d' to remove, or 'git wtclean -D' to force remove.";
+    }
+    return $failed ? 1 : 0;
+}
 
 sub usage {
     print <<'USAGE';
@@ -29,86 +107,15 @@ USAGE
     return;
 }
 
-my ( $delete_flag, $prune, $verbose, $help );
-Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case' );
-GetOptions(
-    'd'         => sub { set_delete('-d') },
-    'D'         => sub { set_delete('-D') },
-    'prune'     => \$prune,
-    'verbose|v' => \$verbose,
-    'help|h'    => \$help,
-) or exit 2;
-if ($help) { usage(); exit 0; }
-if (@ARGV) {
-    warn "git wtclean: unexpected arguments: @ARGV\n";
-    exit 2;
-}
-
 sub set_delete {
-    my ($flag) = @_;
-    if ( defined $delete_flag ) {
+    my ( $delete_flag, $flag ) = @_;
+    if ( defined ${$delete_flag} ) {
         warn "git wtclean: specify only one delete option: -d or -D\n";
         exit 2;
     }
-    $delete_flag = $flag;
+    ${$delete_flag} = $flag;
     return;
 }
-
-my ( $removed, $found, $failed, $prune_checked ) = ( 0, 0, 0, 0 );
-my $repositories = capture( 'ghq', 'list', '-p' );
-for my $repo ( split /\n/, $repositories ) {
-    next unless length $repo;
-    next unless is_repository($repo);
-    my $worktrees = eval { capture( 'git', '-C', $repo, 'worktree', 'list', '--porcelain', '-z' ) };
-    if ($@) {
-        warn "git wtclean: failed to list worktrees for $repo: $@";
-        $failed++;
-        next;
-    }
-    my @records = split /\0\0/, $worktrees;
-    shift @records;    # The first record is the main worktree.
-    for my $record (@records) {
-        my @fields = split /\0/, $record;
-        next if grep { $_ eq 'bare' } @fields;
-        my ($path) = map { /^worktree (.*)\z/s ? $1 : () } @fields;
-        next unless defined $path && length $path;
-        $found++;
-        unless ( defined $delete_flag ) {
-            say "Would remove: $path";
-            next;
-        }
-        say "Removing ($delete_flag): $path";
-        my @args = $delete_flag eq '-D' ? ( '--force', $path ) : ($path);
-        if ( system( 'git', '-C', $repo, 'worktree', 'remove', @args ) == 0 ) {
-            $removed++;
-        }
-        else {
-            $failed++;
-            warn "git wtclean: failed to remove: $path\n";
-        }
-    }
-    if ($prune) {
-        say "Pruning: $repo" if $verbose;
-        if ( system( 'git', '-C', $repo, 'worktree', 'prune' ) == 0 ) {
-            $prune_checked++;
-        }
-        else {
-            $failed++;
-            warn "git wtclean: failed to prune: $repo\n";
-        }
-    }
-}
-if ( defined $delete_flag ) {
-    say "Done. found=$found removed=$removed prune_checked=$prune_checked failed=$failed";
-}
-elsif ($prune) {
-    say "Done. found=$found prune_checked=$prune_checked failed=$failed";
-}
-else {
-    say
-"Dry run. found=$found. Run 'git wtclean -d' to remove, or 'git wtclean -D' to force remove.";
-}
-exit( $failed ? 1 : 0 );
 
 sub capture {
     my (@command) = @_;

@@ -5,8 +5,65 @@
 #MISE dir="{{cwd}}"
 #MISE raw=true
 use v5.40;
-use Getopt::Long qw(GetOptions);
+use Getopt::Long qw(GetOptionsFromArray);
 use File::Temp   qw(tempdir);
+
+exit main(@ARGV);
+
+sub main {
+    my @arguments = @_;
+    my $key_ref   = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
+    my ( $input, $output, $help );
+    my $namespace = $ENV{OP_SSH_SIGN_NAMESPACE} || 'file';
+    my $hashalg   = 'sha512';
+    Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case', 'require_order' );
+    GetOptionsFromArray(
+        \@arguments,
+        'ref|r=s'       => \$key_ref,
+        'namespace|n=s' => \$namespace,
+        'output|o=s'    => \$output,
+        'hashalg=s'     => \$hashalg,
+        'help|h'        => \$help,
+    ) or return 2;
+    if ($help) {
+        usage();
+        return 0;
+    }
+    die "sign: only one input file is supported\n" if @arguments > 1;
+    $input = shift @arguments;
+    die "sign: input file is not readable: $input\n" if defined $input && !-r $input;
+    die "sign: key reference must not be empty\n" unless length $key_ref;
+    die "namespace must not be empty\n"           unless length $namespace;
+    die "--hashalg must be sha256 or sha512\n"    unless $hashalg =~ /\A(?:sha256|sha512)\z/;
+
+    for my $dependency ( 'op', 'ssh-keygen' ) {
+        die "sign: $dependency is not installed or not in PATH\n" unless grep {
+            my $path = "$_/$dependency";
+            -f $path && -x $path;
+        } split /:/, ( $ENV{PATH} // '' );
+    }
+
+    umask 0077;
+    my $tmpdir = tempdir( 'op-ssh-sign-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
+    local $SIG{INT}  = sub { exit 130 };
+    local $SIG{HUP}  = sub { exit 143 };
+    local $SIG{TERM} = sub { exit 143 };
+    my $key_file = "$tmpdir/key";
+    run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
+    chmod 0600, $key_file or die "chmod $key_file: $!\n";
+
+    my @args = ( '-q', '-Y', 'sign', '-f', $key_file, '-n', $namespace, '-O', "hashalg=$hashalg" );
+    if ( defined $output && length $output ) {
+        run_command( $input, $output, 'ssh-keygen', @args );
+    }
+    elsif ( defined $input ) {
+        run_command( undef, undef, 'ssh-keygen', @args, $input );
+    }
+    else {
+        run_command( undef, undef, 'ssh-keygen', @args );
+    }
+    return 0;
+}
 
 sub usage {
     print <<'USAGE';
@@ -28,56 +85,6 @@ stdout unless --output is specified.
 When file is specified without --output, ssh-keygen writes file.sig.
 USAGE
     return;
-}
-
-my $key_ref = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
-my ( $input, $output, $help );
-my $namespace = $ENV{OP_SSH_SIGN_NAMESPACE} || 'file';
-my $hashalg   = 'sha512';
-Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case', 'require_order' );
-GetOptions(
-    'ref|r=s'       => \$key_ref,
-    'namespace|n=s' => \$namespace,
-    'output|o=s'    => \$output,
-    'hashalg=s'     => \$hashalg,
-    'help|h'        => \$help,
-) or exit 2;
-if ($help) {
-    usage();
-    exit 0;
-}
-die "sign: only one input file is supported\n" if @ARGV > 1;
-$input = shift @ARGV;
-die "sign: input file is not readable: $input\n" if defined $input && !-r $input;
-die "sign: key reference must not be empty\n" unless length $key_ref;
-die "namespace must not be empty\n"           unless length $namespace;
-die "--hashalg must be sha256 or sha512\n"    unless $hashalg =~ /\A(?:sha256|sha512)\z/;
-
-for my $dependency ( 'op', 'ssh-keygen' ) {
-    die "sign: $dependency is not installed or not in PATH\n" unless grep {
-        my $path = "$_/$dependency";
-        -f $path && -x $path;
-    } split /:/, ( $ENV{PATH} // '' );
-}
-
-umask 0077;
-my $tmpdir = tempdir( 'op-ssh-sign-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
-local $SIG{INT}  = sub { exit 130 };
-local $SIG{HUP}  = sub { exit 143 };
-local $SIG{TERM} = sub { exit 143 };
-my $key_file = "$tmpdir/key";
-run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
-chmod 0600, $key_file or die "chmod $key_file: $!\n";
-
-my @args = ( '-q', '-Y', 'sign', '-f', $key_file, '-n', $namespace, '-O', "hashalg=$hashalg" );
-if ( defined $output && length $output ) {
-    run_command( $input, $output, 'ssh-keygen', @args );
-}
-elsif ( defined $input ) {
-    run_command( undef, undef, 'ssh-keygen', @args, $input );
-}
-else {
-    run_command( undef, undef, 'ssh-keygen', @args );
 }
 
 sub run_command {

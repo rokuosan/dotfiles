@@ -9,7 +9,7 @@ use warnings;
 use utf8;
 use POSIX qw(strftime);
 
-use Getopt::Long qw(GetOptions);
+use Getopt::Long qw(GetOptionsFromArray);
 use Pod::Usage   qw(pod2usage);
 
 =head1 NAME
@@ -45,33 +45,40 @@ Each command is executed with error handling, and the script prints timestamps a
 
 =cut
 
-my ( $dry_run, $help );
-Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case' );
-GetOptions(
-    'dry-run|n' => \$dry_run,
-    'help|h'    => \$help,
-) or pod2usage(2);
-pod2usage( -message => "Unexpected arguments: @ARGV", -exitval => 2 ) if @ARGV;
-pod2usage( -exitval => 0,                             -verbose => 1 ) if $help;
+exit main(@ARGV);
 
-my $PATH = [ split( /:/, ( $ENV{PATH} // q{} ) ) ];
-my $BREW_INSTALL_COMMAND =
+sub main {
+    my @arguments = @_;
+    my ( $dry_run, $help );
+    Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case' );
+    GetOptionsFromArray(
+        \@arguments,
+        'dry-run|n' => \$dry_run,
+        'help|h'    => \$help,
+    ) or pod2usage(2);
+    pod2usage( -message => "Unexpected arguments: @arguments", -exitval => 2 ) if @arguments;
+    pod2usage( -exitval => 0,                                  -verbose => 1 ) if $help;
+
+    my $PATH = [ split( /:/, ( $ENV{PATH} // q{} ) ) ];
+    my $BREW_INSTALL_COMMAND =
 '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"';
-die "Homebrew is not installed.\nInstall it with:\n$BREW_INSTALL_COMMAND\n" unless grep {
-    my $p = "$_/" . 'brew';
-    -f $p && -x $p;
-} @$PATH;
+    die "Homebrew is not installed.\nInstall it with:\n$BREW_INSTALL_COMMAND\n" unless grep {
+        my $p = "$_/" . 'brew';
+        -f $p && -x $p;
+    } @$PATH;
 
-my $COMMANDS = [
-    [qw(brew update)],
-    [qw(brew upgrade -y --cask)],
-    [qw(brew upgrade -y)],
-    [qw(brew autoremove)],
-    [qw(brew cleanup)],
-];
+    my $COMMANDS = [
+        [qw(brew update)],
+        [qw(brew upgrade -y --cask)],
+        [qw(brew upgrade -y)],
+        [qw(brew autoremove)],
+        [qw(brew cleanup)],
+    ];
 
-for my $command ( @{$COMMANDS} ) {
-    run_command( $command, $dry_run );
+    for my $command ( @{$COMMANDS} ) {
+        run_command( $command, $dry_run );
+    }
+    return 0;
 }
 
 sub run_command {

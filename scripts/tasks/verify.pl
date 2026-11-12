@@ -5,8 +5,69 @@
 #MISE dir="{{cwd}}"
 #MISE raw=true
 use v5.40;
-use Getopt::Long qw(GetOptions);
+use Getopt::Long qw(GetOptionsFromArray);
 use File::Temp   qw(tempdir);
+
+exit main(@ARGV);
+
+sub main {
+    my @arguments = @_;
+    my $key_ref   = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
+    my ( $input, $output, $help );
+    my $namespace = $ENV{OP_SSH_SIGN_NAMESPACE} || 'file';
+    my $identity  = $ENV{OP_SSH_SIGN_IDENTITY}  || 'signer';
+    my $signature;
+    Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case', 'require_order' );
+    GetOptionsFromArray(
+        \@arguments,
+        'ref|r=s'       => \$key_ref,
+        'namespace|n=s' => \$namespace,
+        'identity|I=s'  => \$identity,
+        'signature|s=s' => \$signature,
+        'help|h'        => \$help,
+    ) or return 2;
+
+    if ($help) {
+        usage();
+        return 0;
+    }
+    die "verify: only one input file is supported\n" if @arguments > 1;
+    $input = shift @arguments;
+    die "verify: input file is not readable: $input\n" if defined $input && !-r $input;
+    die "verify: key reference must not be empty\n" unless length $key_ref;
+    die "namespace must not be empty\n"             unless length $namespace;
+    die "verify: set --signature\n"                 unless defined $signature && length $signature;
+    die "verify: signature file is not readable: $signature\n" unless -r $signature;
+    die "verify: identity must not be empty\n"                 unless length $identity;
+
+    for my $dependency ( 'op', 'ssh-keygen' ) {
+        die "verify: $dependency is not installed or not in PATH\n" unless grep {
+            my $path = "$_/$dependency";
+            -f $path && -x $path;
+        } split /:/, ( $ENV{PATH} // '' );
+    }
+
+    umask 0077;
+    my $tmpdir = tempdir( 'op-ssh-verify-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
+    local $SIG{INT}  = sub { exit 130 };
+    local $SIG{HUP}  = sub { exit 143 };
+    local $SIG{TERM} = sub { exit 143 };
+    my $key_file = "$tmpdir/key";
+    run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
+    chmod 0600, $key_file or die "chmod $key_file: $!\n";
+
+    my $public_key      = capture( 'ssh-keygen', '-y', '-f', $key_file );
+    my $allowed_signers = "$tmpdir/allowed_signers";
+    open my $allowed, '>', $allowed_signers or die "$allowed_signers: $!\n";
+    print {$allowed} "$identity $public_key\n";
+    close $allowed or die "$allowed_signers: $!\n";
+    run_command(
+        $input,           undef, 'ssh-keygen', '-Y', 'verify',   '-f',
+        $allowed_signers, '-I',  $identity,    '-n', $namespace, '-s',
+        $signature
+    );
+    return 0;
+}
 
 sub usage {
     print <<'USAGE';
@@ -26,60 +87,6 @@ If file is omitted, data is read from stdin.
 USAGE
     return;
 }
-
-my $key_ref = $ENV{OP_SSH_SIGN_KEY_REF} || 'op://token/id_ed25519/private key';
-my ( $input, $output, $help );
-my $namespace = $ENV{OP_SSH_SIGN_NAMESPACE} || 'file';
-my $identity  = $ENV{OP_SSH_SIGN_IDENTITY}  || 'signer';
-my $signature;
-Getopt::Long::Configure( 'no_auto_abbrev', 'no_ignore_case', 'require_order' );
-GetOptions(
-    'ref|r=s'       => \$key_ref,
-    'namespace|n=s' => \$namespace,
-    'identity|I=s'  => \$identity,
-    'signature|s=s' => \$signature,
-    'help|h'        => \$help,
-) or exit 2;
-
-if ($help) {
-    usage();
-    exit 0;
-}
-die "verify: only one input file is supported\n" if @ARGV > 1;
-$input = shift @ARGV;
-die "verify: input file is not readable: $input\n" if defined $input && !-r $input;
-die "verify: key reference must not be empty\n" unless length $key_ref;
-die "namespace must not be empty\n"             unless length $namespace;
-die "verify: set --signature\n"                 unless defined $signature && length $signature;
-die "verify: signature file is not readable: $signature\n" unless -r $signature;
-die "verify: identity must not be empty\n"                 unless length $identity;
-
-for my $dependency ( 'op', 'ssh-keygen' ) {
-    die "verify: $dependency is not installed or not in PATH\n" unless grep {
-        my $path = "$_/$dependency";
-        -f $path && -x $path;
-    } split /:/, ( $ENV{PATH} // '' );
-}
-
-umask 0077;
-my $tmpdir = tempdir( 'op-ssh-verify-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1 );
-local $SIG{INT}  = sub { exit 130 };
-local $SIG{HUP}  = sub { exit 143 };
-local $SIG{TERM} = sub { exit 143 };
-my $key_file = "$tmpdir/key";
-run_command( undef, '/dev/null', 'op', 'read', '--force', '--out-file', $key_file, $key_ref );
-chmod 0600, $key_file or die "chmod $key_file: $!\n";
-
-my $public_key      = capture( 'ssh-keygen', '-y', '-f', $key_file );
-my $allowed_signers = "$tmpdir/allowed_signers";
-open my $allowed, '>', $allowed_signers or die "$allowed_signers: $!\n";
-print {$allowed} "$identity $public_key\n";
-close $allowed or die "$allowed_signers: $!\n";
-run_command(
-    $input,           undef, 'ssh-keygen', '-Y', 'verify',   '-f',
-    $allowed_signers, '-I',  $identity,    '-n', $namespace, '-s',
-    $signature
-);
 
 sub run_command {
     my ( $input, $output, @command ) = @_;

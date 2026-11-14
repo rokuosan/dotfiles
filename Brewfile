@@ -15,6 +15,8 @@ brew "git"
 brew "gnupg"
 # Tools and libraries to manipulate images in select formats
 brew "imagemagick"
+# Paste images from the macOS clipboard in Neovim
+brew "pngpaste"
 # YAML Parser
 brew "libyaml"
 # Ambitious Vim-fork focused on extensibility and agility

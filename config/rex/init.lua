@@ -1,7 +1,7 @@
 rex.action{
   name = "ghq_repository",
   title = "Open ghq Repository…",
-  run = function()
+  run = function(ctx)
     local result, err = rex.exec({ "zsh", "-lic", "ghq list --full-path" })
     if not result or not result.ok then
       error(err or result.stderr, 0)
@@ -32,13 +32,20 @@ rex.action{
       error(detail or reason, 0)
     end
 
-    local _, open_error = rex.session.new_window{
+    local window, open_error = rex.session.new_window{
+      focus = true,
       layout = rex.layout.block{
         flavor = "com.superlogical.terminal.shell",
         options = { cwd = path },
       },
     }
     if open_error then error(open_error, 0) end
+    if ctx.client_id then
+      rex.client.queue("session.select", {
+        session_id = ctx.session_id,
+        window_id = window.window_id,
+      })
+    end
   end,
 }
 

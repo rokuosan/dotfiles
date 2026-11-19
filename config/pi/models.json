@@ -1,0 +1,16 @@
+{
+  "providers": {
+    "spark": {
+      "baseUrl": "https://gateway.ai.cloudflare.com/v1/1329af2ae6bed23f31346a1baabf7cbe/yaken-ai/custom-spark-cccd",
+      "api": "openai-completions",
+      "apiKey": "$SPARK_OLLAMA_API_KEY",
+      "models": [
+        {
+          "id": "nvidia/Qwen3.8-27B-NVFP4",
+          "contextWindow": 262144,
+          "maxTokens": 8192
+        }
+      ]
+    }
+  }
+}

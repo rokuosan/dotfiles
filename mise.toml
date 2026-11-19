@@ -19,6 +19,8 @@ perl = {
 "~/.claude/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
 "~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "copy", create_if_missing = true }
 "~/.codex/config.toml/shared" = { source = "config/codex/config.toml", merge = true }
+"~/.pi/agent/models.json/shared" = { source = "config/pi/models.json", merge = true }
+"~/.pi/agent/settings.json/shared" = { source = "config/pi/settings.json", merge = true }
 
 "~/.config/git" = { source = "config/git" }
 "~/.config/herdr/config.toml" = { source = "config/herdr/config.toml" }

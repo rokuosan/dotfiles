@@ -2,10 +2,12 @@
 "~/.config/git-platform" = { source = "config/git/linux" }
 
 [bootstrap.packages]
+"apt:age" = { version = "latest" }
 "apt:build-essential" = { version = "latest" }
 "apt:jq" = { version = "latest" }
 "apt:less" = { version = "latest" }
 "apt:libx11-dev" = { version = "latest" }
+"apt:qpdf" = { version = "latest" }
 "apt:unzip" = { version = "latest" }
 "apt:xz-utils" = { version = "latest" }
 "apt:zsh" = { version = "latest" }

@@ -28,6 +28,7 @@ lazygit = "latest"
 neovim = { version = "latest", os = ["linux"] }
 node = "26"
 "npm:@helpfeel/cosense-cli" = { version = "latest", allow_low_downloads = true }
+op = { version = "latest", os = ["linux"] }
 opencode = "latest"
 ripgrep = "latest"
 perl = "latest"

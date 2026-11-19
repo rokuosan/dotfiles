@@ -46,7 +46,8 @@ mise shims are also on PATH for commands run with `ssh host command`.
 The Linux profile keeps GitHub CLI authentication in the host's own
 `~/.config/gh`. Git signs with OpenSSH using the configured public key.
 To sign from an SSH session, make that key available to the remote session
-through your SSH agent.
+through your SSH agent. The `encrypt`, `sign`, and `verify` tasks also need
+an authenticated 1Password CLI session on the machine where they run.
 
 ## Existing installations
 

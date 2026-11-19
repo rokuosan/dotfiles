@@ -2,8 +2,10 @@ bindkey -e
 
 bindkey -r '^T'
 
-ZSH_CONFIG_PATH="$HOME/.config/zsh/"
+ZSH_CONFIG_PATH="$HOME/.config/zsh"
 ZSH_MODULE_PATH="$ZSH_CONFIG_PATH/module.d"
+
+fpath=("$ZSH_CONFIG_PATH/completion.d" $fpath)
 
 # Load modules
 module_names=(
@@ -11,12 +13,12 @@ module_names=(
     "completion"
     "history"
     "starship"
-    "syntax-highlight"
     "peco"
     "git-wt"
+    "syntax-highlight"
 )
 for module_name in $module_names; do
-    source $HOME/.config/zsh/module.d/$module_name.zsh
+    source "$ZSH_MODULE_PATH/$module_name.zsh"
 done
 unset module_name{s,}
 
@@ -25,8 +27,12 @@ if [[ -f "$HOME/.zshrc.local" ]]; then
 fi
 
 # Aliases
-alias ls='ls -G --color=auto'
-alias ll='ls -G --color=auto -la'
+if [[ $OSTYPE == darwin* ]]; then
+    alias ls='ls -G --color=auto'
+else
+    alias ls='ls --color=auto'
+fi
+alias ll='ls -la'
 alias path='echo $PATH | tr ":" "\n" | less'
 alias q='exit'
 alias qq='exit'
@@ -54,6 +60,8 @@ if (( ${+commands[bat]} )); then
     alias cat="bat"
 fi
 
-if (( ${+commands[op]} )); then
-    export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+if [[ $OSTYPE == darwin* && -z $SSH_CONNECTION ]]; then
+    agent_socket="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    [[ -S $agent_socket ]] && export SSH_AUTH_SOCK="$agent_socket"
+    unset agent_socket
 fi

@@ -1,49 +1,18 @@
-# The following lines were added by Docker Desktop to add commands to your PATH.
-export PATH="$PATH:/Users/rokuosan/.docker/bin"
-# End of Docker Desktop section.
-
-typeset -gU path fpath cdpath
-
-export LANG='ja_JP.UTF-8'
-export LC_ALL='ja_JP.UTF-8'
-
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-
-export GOPATH="$HOME/go"
-
 # Editor
 export PAGER='less'
 export LESS='--quit-if-one-screen --hilite-search --ignore-case --LONG-PROMPT --RAW-CONTROL-CHARS --chop-long-lines --hilite-unread --no-init --window=-5'
-case "$OSTYPE" in
-    darwin*)
-        export EDITOR='nvim'
-        ;;
-    *)
-        export EDITOR='vim'
-        ;;
-esac
+export EDITOR='nvim'
 
-path=(
-    $GOPATH/bin
-    $HOME/bin
-    $HOME/.local/bin
-    /opt/homebrew/{sbin,bin}
-    /usr/local/{sbin,bin}
-    /usr/{sbin,bin}
-    /{sbin,bin}
-    $path
-)
-fpath=(
-    $HOME/.config/zsh/completion.d
-    $fpath
-)
+if [[ $OSTYPE == darwin* ]]; then
+    export LANG='ja_JP.UTF-8'
+    export LC_ALL='ja_JP.UTF-8'
+    path+=("$HOME/.docker/bin")
+fi
 
 # Homebrew
-if [[ -d /opt/homebrew ]]; then
+if [[ $OSTYPE == darwin* && -d /opt/homebrew ]]; then
     brew_prefix="/opt/homebrew"
-elif [[ -d /usr/local ]]; then
+elif [[ $OSTYPE == darwin* && -x /usr/local/bin/brew ]]; then
     brew_prefix="/usr/local"
 else
     brew_prefix=""

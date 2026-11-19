@@ -1,3 +1,5 @@
-#!/bin/usr/env zsh
+#!/usr/bin/env zsh
 
-eval "$(mise activate zsh)"
+if (( $+commands[mise] )); then
+    eval "$(mise activate zsh)"
+fi

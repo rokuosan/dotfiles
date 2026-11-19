@@ -12,10 +12,6 @@
 	gpgSign = true
 [gpg]
  	format = ssh
-[gpg "ssh"]
- 	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-[url "git@github.com:"]
-	insteadOf = https://github.com/
 [ghq]
 	root = ~/repo
 [push]
@@ -27,3 +23,5 @@
 	ch = cherry-pick
 [wt]
 	basedir = .worktrees
+[include]
+	path = ~/.config/git-platform

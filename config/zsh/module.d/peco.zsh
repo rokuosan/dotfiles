@@ -1,7 +1,7 @@
 if (( $+commands[peco] )); then
     # History
     function peco-history-selection() {
-        BUFFER=`history -n 1 | tac  | awk '!a[$0]++' | peco`
+        BUFFER=`history -nr 1  | awk '!a[$0]++' | peco`
         CURSOR=$#BUFFER
         zle reset-prompt
     }
@@ -22,14 +22,10 @@ if (( $+commands[peco] )); then
 
     # ghq
     function peco-ghq-look () {
-        local ghq_roots="$(git config --path --get-all ghq.root)"
-        local selected_dir=$(ghq list --full-path | \
-            xargs -I{} gls -dl --time-style=+%s {}/.git | sed 's/.*\([0-9]\{10\}\)/\1/' | sort -nr | \
-            sed "s,.*\(${ghq_roots/$'\n'/\|}\)/,," | \
-            sed 's/\/.git//' | \
-            peco --prompt="cd-ghq >" --query "$LBUFFER")
-        if [ -n "$selected_dir" ]; then
-            BUFFER="cd $(ghq list --full-path | grep --color=never -E "/$selected_dir$")"
+        local selected_dir
+        selected_dir=$(ghq list --full-path | peco --prompt="cd-ghq >" --query "$LBUFFER") || return
+        if [[ -n $selected_dir ]]; then
+            BUFFER="cd ${(q)selected_dir}"
             zle accept-line
         fi
     }

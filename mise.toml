@@ -8,23 +8,28 @@ perl = {
 [dotfiles]
 "~/bin" = { source = "bin" }
 
+"~/.zshenv" = { source = "config/zsh/.zshenv" }
 "~/.zshrc" = { source = "config/zsh/.zshrc" }
 "~/.zprofile" = { source = "config/zsh/.zprofile" }
 "~/.config/zsh" = { source = "config/zsh" }
 
-"~/.agents/skills/apple-container" = { source = "agents/skills/apple-container" }
+"~/.agents/skills/apple-container" = { source = "agents/skills/apple-container", os = "macos" }
 "~/.agents/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
 "~/.agents/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
-"~/.claude/skills/apple-container" = { source = "agents/skills/apple-container" }
+"~/.claude/skills/apple-container" = { source = "agents/skills/apple-container", os = "macos" }
 "~/.claude/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
 "~/.claude/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
 "~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "copy", create_if_missing = true }
 "~/.codex/config.toml/shared" = { source = "config/codex/config.toml", merge = true }
 
-"~/.config/1Password" = { source = "config/1Password" }
-"~/.config/gh" = { source = "config/gh" }
-"~/.config/ghostty" = { source = "config/ghostty" }
+"~/.config/1Password" = { source = "config/1Password", os = "macos" }
+"~/.config/gh" = { source = "config/gh", os = "macos" }
+"~/.config/ghostty" = { source = "config/ghostty", os = "macos" }
 "~/.config/git" = { source = "config/git" }
+"~/.config/git-platform" = [
+  { source = "config/git/macos", os = "macos" },
+  { source = "config/git/linux", os = "linux" },
+]
 "~/.config/herdr/config.toml" = { source = "config/herdr/config.toml" }
 "~/.config/mise/config.toml" = { source = "config/mise/config.toml" }
 "~/.config/mise/tasks" = { source = "scripts/tasks" }
@@ -32,7 +37,17 @@ perl = {
 "~/.config/peco" = { source = "config/peco" }
 "~/.config/pnpm" = { source = "config/pnpm" }
 "~/.config/starship" = { source = "config/starship" }
-"~/.config/wezterm" = { source = "config/wezterm" }
+"~/.config/wezterm" = { source = "config/wezterm", os = "macos" }
+
+[bootstrap.packages]
+"apt:build-essential" = { version = "latest", os = "linux" }
+"apt:jq" = { version = "latest", os = "linux" }
+"apt:less" = { version = "latest", os = "linux" }
+"apt:unzip" = { version = "latest", os = "linux" }
+"apt:xz-utils" = { version = "latest", os = "linux" }
+"apt:zsh" = { version = "latest", os = "linux" }
+"apt:zsh-autosuggestions" = { version = "latest", os = "linux" }
+"apt:zsh-syntax-highlighting" = { version = "latest", os = "linux" }
 
 [tasks."setup:brew"]
 description = "Install Homebrew and packages from Brewfile"

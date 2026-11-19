@@ -53,7 +53,11 @@ zstyle ':completion:*' verbose yes
 zstyle ':completion:*' completer _expand _complete _match _prefix _approximate _list _history
 zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 
-# Suggest
-if [[ -r /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
-    source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
+# Suggestions
+for suggestions in /opt/homebrew/share/zsh-autosuggestions /usr/local/share/zsh-autosuggestions /usr/share/zsh-autosuggestions; do
+    if [[ -r $suggestions/zsh-autosuggestions.zsh ]]; then
+        source "$suggestions/zsh-autosuggestions.zsh"
+        break
+    fi
+done
+unset suggestions

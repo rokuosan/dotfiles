@@ -10,24 +10,48 @@ export PATH="$HOME/.local/bin:$PATH"
 # Clone the repository and submodules under the configured ghq root
 GHQ_ROOT="$HOME/repo" mise exec ghq@latest -- ghq get https://github.com/rokuosan/dotfiles
 
-# Change to the dotfiles directory
+# Change to the dotfiles directory and initialize the skills
 cd ~/repo/github.com/rokuosan/dotfiles
+git submodule update --init --recursive
 
-# Trust the configuration and preview dotfile deployment
-mise trust
-mise bootstrap --only dotfiles --dry-run
-
-# Apply the dotfiles
-mise bootstrap --only dotfiles
+# macOS
+mise -E macos trust
+mise -E macos dot apply --dry-run
+mise -E macos dot apply
 ```
 
 The ghq root is `~/repo`, matching `config/git/config`. After loading the zsh
 configuration, press `Ctrl-G` to select a repository with ghq and peco.
 
+### Ubuntu and Debian
+
+From the dotfiles checkout, preview the deployment, install the system
+packages and link the dotfiles, then install the mise tools:
+
+```sh
+mise -E linux trust
+mise -E linux bootstrap --only packages,dotfiles --dry-run
+mise -E linux bootstrap --only packages,dotfiles
+mise -E linux install
+```
+
+If an existing `~/.config/mise/config.toml` conflicts, back it up before
+applying the dotfiles. Keep machine-specific tool or settings overrides in
+`~/.config/mise/config.local.toml`.
+
+Start a login shell with `zsh -l` to check the configuration, then use
+`chsh -s "$(command -v zsh)"` to make future SSH logins start in zsh. The
+mise shims are also on PATH for commands run with `ssh host command`.
+
+The Linux profile keeps GitHub CLI authentication in the host's own
+`~/.config/gh`. Git signs with OpenSSH using the configured public key.
+To sign from an SSH session, make that key available to the remote session
+through your SSH agent.
+
 ## Existing installations
 
 Links that already point to the declared sources are left unchanged. Preview
-with `mise bootstrap --only dotfiles --dry-run` before applying. Existing regular files and
+with `mise -E <profile> dot apply --dry-run` before applying. Existing regular files and
 directories conflict; inspect and remove or move only those targets yourself,
 then rerun. Links to other sources, including broken links, are repointed.
 No automatic backup is configured.
@@ -40,7 +64,7 @@ are seeded only when missing, so application-generated settings can remain local
 To apply only the dotfiles from outside this repository:
 
 ```sh
-mise -C ~/repo/github.com/rokuosan/dotfiles dot apply
+mise -C ~/repo/github.com/rokuosan/dotfiles -E linux dot apply  # use -E macos on macOS
 ```
 
 ## Homebrew packages and applications

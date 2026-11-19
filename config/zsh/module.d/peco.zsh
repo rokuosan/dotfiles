@@ -23,7 +23,17 @@ if (( $+commands[peco] )); then
     # ghq
     function peco-ghq-look () {
         local selected_dir
-        selected_dir=$(ghq list --full-path | peco --prompt="cd-ghq >" --query "$LBUFFER") || return
+        selected_dir=$(
+            zmodload zsh/stat || exit
+            local repo
+            local -a modified
+            while IFS= read -r repo; do
+                zstat -A modified +mtime "$repo/.git" 2>/dev/null || continue
+                printf '%s\t%s\n' "$modified[1]" "$repo"
+            done < <(ghq list --full-path)
+        )
+        selected_dir=$(printf '%s\n' "$selected_dir" | sort -k1,1nr | cut -f2- |
+            peco --prompt="cd-ghq >" --query "$LBUFFER") || return
         if [[ -n $selected_dir ]]; then
             BUFFER="cd ${(q)selected_dir}"
             zle accept-line

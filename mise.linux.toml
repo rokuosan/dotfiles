@@ -1,0 +1,12 @@
+[dotfiles]
+"~/.config/git-platform" = { source = "config/git/linux" }
+
+[bootstrap.packages]
+"apt:build-essential" = { version = "latest" }
+"apt:jq" = { version = "latest" }
+"apt:less" = { version = "latest" }
+"apt:unzip" = { version = "latest" }
+"apt:xz-utils" = { version = "latest" }
+"apt:zsh" = { version = "latest" }
+"apt:zsh-autosuggestions" = { version = "latest" }
+"apt:zsh-syntax-highlighting" = { version = "latest" }

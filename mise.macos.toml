@@ -1,0 +1,8 @@
+[dotfiles]
+"~/.config/git-platform" = { source = "config/git/macos" }
+"~/.agents/skills/apple-container" = { source = "agents/skills/apple-container" }
+"~/.claude/skills/apple-container" = { source = "agents/skills/apple-container" }
+"~/.config/1Password" = { source = "config/1Password" }
+"~/.config/gh" = { source = "config/gh" }
+"~/.config/ghostty" = { source = "config/ghostty" }
+"~/.config/wezterm" = { source = "config/wezterm" }

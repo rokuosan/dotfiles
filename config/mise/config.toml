@@ -49,6 +49,10 @@ direnv = "latest"
 codex = "latest"
 "npm:cf" = "v1.0.0-beta.17"
 bun = "latest"
+kubectl = "latest"
+antigravity-cli = "latest"
+pi = "latest"
+hunk = "latest"
 
 [settings]
 experimental = true

@@ -49,6 +49,15 @@ To sign from an SSH session, make that key available to the remote session
 through your SSH agent. The `encrypt`, `sign`, and `verify` tasks also need
 an authenticated 1Password CLI session on the machine where they run.
 
+On Linux, `.zshenv` publishes the forwarded agent at
+`~/.ssh/agent-forwarded.sock` and exports that stable path. Each new SSH
+connection updates the link before Herdr attaches, so existing processes using
+that path can sign after reconnecting. This also runs for non-interactive SSH
+commands. The most recent connection supplying a socket becomes the target;
+disconnecting it requires another SSH connection to refresh the link.
+Panes or agents that still hold a raw socket path need to be recreated once.
+Check forwarding with `ssh-add -l`; keep Git commit signing enabled if it fails.
+
 ## Existing installations
 
 Links that already point to the declared sources are left unchanged. Preview

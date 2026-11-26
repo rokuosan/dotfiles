@@ -2,6 +2,7 @@
 return {
   "stevearc/conform.nvim",
   opts = function(_, opts)
+    opts.default_format_opts = vim.tbl_extend("force", opts.default_format_opts or {}, { timeout_ms = 5000 })
     -- Run the first available formatter with a project configuration.
     opts.formatters_by_ft = opts.formatters_by_ft or {}
     for _, ft in ipairs {

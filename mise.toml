@@ -1,9 +1,6 @@
 [tools]
 lua = "latest"
-perl = {
-  version = "latest",
-  postinstall = "env -u NO_COLOR cpanm --quiet --mirror https://cpan.metacpan.org --mirror-only Perl::Tidy Perl::Critic"
-}
+perl = { version = "latest", postinstall = "env -u NO_COLOR cpanm --quiet --mirror https://cpan.metacpan.org --mirror-only Perl::Tidy Perl::Critic" }
 
 [dotfiles]
 "~/bin" = { source = "bin" }
@@ -16,9 +13,7 @@ perl = {
 "~/.agents/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
 "~/.agents/skills/diff-reading-guide" = { source = "agents/skills/diff-reading-guide" }
 "~/.agents/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
-"~/.claude/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
-"~/.claude/skills/diff-reading-guide" = { source = "agents/skills/diff-reading-guide" }
-"~/.claude/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
+
 "~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "copy", create_if_missing = true }
 "~/.codex/config.toml/shared" = { source = "config/codex/config.toml", merge = true }
 "~/.pi/agent/models.json/shared" = { source = "config/pi/models.json", merge = true }

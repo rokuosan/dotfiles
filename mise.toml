@@ -13,6 +13,7 @@ perl = { version = "latest", postinstall = "env -u NO_COLOR cpanm --quiet --mirr
 "~/.agents/skills/japanese-tech-writing" = { source = "agents/skills/japanese-tech-writing" }
 "~/.agents/skills/diff-reading-guide" = { source = "agents/skills/diff-reading-guide" }
 "~/.agents/skills/untangle-codebase" = { source = "agents/skills/untangle-codebase" }
+"~/.agents/skills/git-worktree" = { source = "agents/skills/git-worktree" }
 
 "~/.claude/settings.json" = { source = "config/claude/settings.json", mode = "copy", create_if_missing = true }
 "~/.codex/config.toml/shared" = { source = "config/codex/config.toml", merge = true }

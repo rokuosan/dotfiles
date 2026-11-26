@@ -84,3 +84,6 @@ path=(
     "${MISE_DATA_DIR:-$XDG_DATA_HOME/mise}/shims"
     $path
 )
+if [[ -f "$HOME/.zshenv.local" ]]; then
+    source "$HOME/.zshenv.local"
+fi

@@ -1,5 +1,6 @@
 bindkey -e
 
+# for herdr
 bindkey -r '^T'
 
 ZSH_CONFIG_PATH="$HOME/.config/zsh"
@@ -40,17 +41,6 @@ alias "/exit"="exit"
 alias k='kubectl'
 alias gsp='git switch `git branch | peco | sed -e "s/*//g"`'
 alias nl='nl -b a -s ": " '
-
-if (( ${+commands[nvim]} )); then
-    alias v='nvim'
-fi
-
-if (( ${+commands[codex]} )); then
-    alias codexauto="codex --sandbox workspace-write --ask-for-approval untrusted -c approvals_reviewer=auto_review"
-    alias codexx="codex --sandbox workspace-write --ask-for-approval untrusted"
-    alias codexro="codex --sandbox read-only --ask-for-approval never"
-    alias codexroi="codex --sandbox read-only --ask-for-approval on-request"
-fi
 
 if (( ${+commands[zoxide]} )); then
     [[ $- == *i* ]] && eval "$(zoxide init zsh --cmd cd)"
